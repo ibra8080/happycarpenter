@@ -11,12 +11,14 @@ class RegisterSerializer(serializers.ModelSerializer):
     )
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
-    user_type = serializers.ChoiceField(choices=Profile.USER_TYPE_CHOICES, required=True)
-    years_of_experience = serializers.IntegerField(required=False)
-    specialties = serializers.CharField(required=False)
-    portfolio_url = serializers.URLField(required=False)
-    interests = serializers.ListField(child=serializers.CharField(max_length=100), required=False)
-    address = serializers.CharField(max_length=255, required=False)
+    
+    # Profile fields
+    user_type = serializers.ChoiceField(choices=Profile.USER_TYPE_CHOICES, required=True, write_only=True)
+    years_of_experience = serializers.IntegerField(required=False, write_only=True)
+    specialties = serializers.CharField(required=False, write_only=True)
+    portfolio_url = serializers.URLField(required=False, write_only=True)
+    interests = serializers.ListField(child=serializers.CharField(max_length=100), required=False, write_only=True)
+    address = serializers.CharField(max_length=255, required=False, write_only=True)
 
     class Meta:
         model = User
@@ -41,30 +43,32 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        user_type = validated_data.pop('user_type')
+        # Remove profile-specific data
+        user_type = validated_data.pop('user_type', 'amateur')
         years_of_experience = validated_data.pop('years_of_experience', None)
         specialties = validated_data.pop('specialties', '')
         portfolio_url = validated_data.pop('portfolio_url', '')
         interests = validated_data.pop('interests', [])
         address = validated_data.pop('address', '')
         
-        user = User.objects.create(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name']
-        )
-        user.set_password(validated_data['password'])
-        user.save()
-        
-        Profile.objects.create(
+        # Remove password2 field
+        validated_data.pop('password2', None)
+
+        # Create user
+        user = User.objects.create_user(**validated_data)
+
+        # Create or update profile
+        Profile.objects.update_or_create(
             owner=user,
-            user_type=user_type,
-            years_of_experience=years_of_experience,
-            specialties=specialties,
-            portfolio_url=portfolio_url,
-            interests=interests,
-            address=address
+            defaults={
+                'user_type': user_type,
+                'years_of_experience': years_of_experience,
+                'specialties': specialties,
+                'portfolio_url': portfolio_url,
+                'interests': interests,
+                'address': address,
+                'name': user.get_full_name()
+            }
         )
-        
+
         return user
