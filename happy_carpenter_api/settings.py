@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 
 if os.path.exists('env.py'):
     import env
@@ -68,6 +69,7 @@ INSTALLED_APPS = [
     'posts',
     'likes',
     'follows',
+    'authentication',
 ]
 
 MIDDLEWARE = [
@@ -106,11 +108,19 @@ WSGI_APPLICATION = 'happy_carpenter_api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default='postgres://uct1b7j6rj0:sTcQSZdD5vip@ep-gentle-mountain-a23bxz6h-pooler.eu-central-1.aws.neon.tech/woven_blend_cone_604593',
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 
