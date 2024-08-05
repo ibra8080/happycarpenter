@@ -1,9 +1,10 @@
-from rest_framework import status, permissions
+from rest_framework import status, permissions, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Post
-from .serializers import PostSerializer
+from .models import Post, Comment
+from .serializers import PostSerializer, CommentSerializer
 from happy_carpenter_api.permissions import IsOwnerOrReadOnly
+
 
 class PostList(APIView):
     serializer_class = PostSerializer
@@ -66,3 +67,18 @@ class PostDetail(APIView):
         return Response(
             status=status.HTTP_204_NO_CONTENT
         )
+
+
+class CommentList(generics.ListCreateAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Comment.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsOwnerOrReadOnly]
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
+
