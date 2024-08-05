@@ -26,5 +26,6 @@ urlpatterns = [
     path('', include('posts.urls')),
     path('', include('likes.urls')),
     path('', include('follows.urls')),
+    path('auth/', include('authentication.urls')),
     path('api/token/', CustomObtainAuthToken.as_view(), name='api_token_auth'),
 ]
