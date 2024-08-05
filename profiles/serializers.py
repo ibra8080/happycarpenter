@@ -14,9 +14,13 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = [
             'id', 'owner', 'created_at', 'updated_at', 'name',
-            'content', 'image', 'is_owner'
+            'content', 'image', 'is_owner', 'user_type',
+            'years_of_experience', 'specialties', 'portfolio_url',
+            'interests', 'address'
         ]
         read_only_fields = ['owner']
+
+
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)

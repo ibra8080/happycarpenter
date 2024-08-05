@@ -17,9 +17,11 @@ class ProfileList(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     def get(self, request):
         profiles = Profile.objects.all()
+        print(f"Number of profiles: {profiles.count()}")  # Debug print
         serializer = ProfileSerializer(
             profiles, many=True, context={'request': request}
         )
+        print(f"Serialized data: {serializer.data}")  # Debug print
         return Response(serializer.data)
 
 
