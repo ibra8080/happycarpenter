@@ -8,19 +8,19 @@
 - [x] Start user authentication implementation (3 hours)
 
 ### Day 2 (8 hours)
-- [ ] Finish user authentication (2 hours)
+- [x] Finish user authentication (2 hours)
 - [x] Create API views and serializers for User and Post models (4 hours)
 - [x] Begin implementing permissions (2 hours)
 
 ### Day 3 (8 hours)
-- [ ] Finish implementing permissions (2 hours)
-- [ ] Create Comment and Like models, views, and serializers (4 hours)
-- [ ] Start implementing Follow functionality (2 hours)
+- [x] Finish implementing permissions (2 hours)
+- [x] Create Comment and Like models, views, and serializers (4 hours)
+- [x] Start implementing Follow functionality (2 hours)
 
 ### Day 4 (8 hours)
-- [ ] Finish Follow functionality (2 hours)
-- [ ] Implement basic search functionality (3 hours)
-- [ ] Set up categories/tags system (3 hours)
+- [x] Finish Follow functionality (2 hours)
+- [x] Implement basic search functionality (3 hours)
+- [x] Set up categories/tags system (3 hours)
 
 ### Day 5 (8 hours)
 - [ ] Set up React project (1 hour)
