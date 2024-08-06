@@ -1,34 +1,29 @@
 from rest_framework import status, permissions, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Post, Comment
-from .serializers import PostSerializer, CommentSerializer
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
+from .models import Post, Comment, Category  
+from .serializers import PostSerializer, CommentSerializer, CategorySerializer  
 from happy_carpenter_api.permissions import IsOwnerOrReadOnly
 
 
-class PostList(APIView):
+class PostList(generics.ListCreateAPIView):
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Post.objects.all()
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['categories', 'owner__profile__user_type', 'image_filter']
+    search_fields = ['title', 'content', 'owner__username', 'categories__name']
+    ordering_fields = ['created_at', 'updated_at']
 
-    def get(self, request):
-        posts = Post.objects.all()
-        serializer = PostSerializer(
-            posts, many=True, context={'request': request}
-        )
-        return Response(serializer.data)
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
-    def post(self, request):
-        serializer = PostSerializer(
-            data=request.data, context={'request': request}
-        )
-        if serializer.is_valid():
-            serializer.save(owner=request.user)
-            return Response(
-                serializer.data, status=status.HTTP_201_CREATED
-            )
-        return Response(
-            serializer.errors, status=status.HTTP_400_BAD_REQUEST
-        )
+class CategoryList(generics.ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 class PostDetail(APIView):
     permission_classes = [IsOwnerOrReadOnly]

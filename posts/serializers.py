@@ -1,5 +1,11 @@
 from rest_framework import serializers
-from .models import Post, Comment
+from .models import Post, Comment, Category
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name']
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -44,10 +50,29 @@ class PostSerializer(serializers.ModelSerializer):
         return request.user == obj.owner
 
     comments = CommentSerializer(many=True, read_only=True)
+    categories = CategorySerializer(many=True, required=False)
 
     class Meta:
         model = Post
         fields = [
             'id', 'owner', 'is_owner', 'profile_id', 'profile_image',
-            'created_at', 'updated_at', 'title', 'content', 'image', 'image_filter','comments'
+            'created_at', 'updated_at', 'title', 'content', 'image', 
+            'image_filter', 'comments', 'categories'
         ]
+    
+    def create(self, validated_data):
+        categories_data = validated_data.pop('categories', [])
+        post = Post.objects.create(**validated_data)
+        for category_data in categories_data:
+            category, _ = Category.objects.get_or_create(**category_data)
+            post.categories.add(category)
+        return post
+
+    def update(self, instance, validated_data):
+        categories_data = validated_data.pop('categories', [])
+        instance = super().update(instance, validated_data)
+        instance.categories.clear()
+        for category_data in categories_data:
+            category, _ = Category.objects.get_or_create(**category_data)
+            instance.categories.add(category)
+        return instance
