@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'likes',
     'follows',
     'authentication',
+    'professionals',
 ]
 
 MIDDLEWARE = [
