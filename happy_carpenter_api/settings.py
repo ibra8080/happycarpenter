@@ -34,14 +34,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-0li)j^65f2x$sk#+%1ez72ya27by-pdq_495_*h3qzu)iiozoa'
+# SECRET_KEY = 'django-insecure-0li)j^65f2x$sk#+%1ez72ya27by-pdq_495_*h3qzu)iiozoa'
+SECRET_KEY = os.getenv('django-insecure-0li)j^65f2x$sk#+%1ez72ya27by-pdq_495_*h3qzu)iiozoa', "CreateANEWRandomValueHere")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = 'DEV' in os.environ
 
 ALLOWED_HOSTS = [
     '8000-ibra8080-happycarpenter-oxrz2os0tx6.ws.codeinstitute-ide.net',
     'localhost',
+    'happy-carpenter.herokuapp.com',
     '127.0.0.1',
 ]
 
@@ -87,6 +89,7 @@ SITE_ID = 1
 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -97,6 +100,17 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
+
+if 'CLIENT_ORIGIN' in os.environ:
+     CORS_ALLOWED_ORIGINS = [
+         os.environ.get('CLIENT_ORIGIN')
+     ]
+else:
+     CORS_ALLOWED_ORIGIN_REGEXES = [
+         r"^https://.*\.gitpod\.io$",
+     ]
+
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'happy_carpenter_api.urls'
 
@@ -129,14 +143,19 @@ WSGI_APPLICATION = 'happy_carpenter_api.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default='postgres://uct1b7j6rj0:sTcQSZdD5vip@ep-gentle-mountain-a23bxz6h-pooler.eu-central-1.aws.neon.tech/woven_blend_cone_604593',
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
-
+if 'DEV' in os.environ:
+     DATABASES = {
+         'default': {
+             'ENGINE': 'django.db.backends.sqlite3',
+             'NAME': BASE_DIR / 'db.sqlite3',
+         }
+     }
+else:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default='postgres://uct1b7j6rj0:sTcQSZdD5vip@ep-gentle-mountain-a23bxz6h-pooler.eu-central-1.aws.neon.tech/woven_blend_cone_604593',
+        )
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -184,11 +203,20 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication'
         if 'DEV' in os.environ
         else 'dj_rest_auth.jwt_auth.JWTCookieAuthentication'
-    )]
+    )],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'DATETIME_FORMAT': '%d %b %Y',
 }
+
+if 'DEV' not in os.environ:
+    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
+        'rest_framework.renderers.JSONRenderer',
+    ]
 
 
 REST_AUTH_SERIALIZERS = {'USER_DETAILS_SERIALIZER': 'happy_carpenter_api.serializers.CurrentUserSerializer'}
+
 
 # dj-rest-auth settings
 REST_AUTH = {
@@ -211,3 +239,8 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
+
+JWT_AUTH_COOKIE = 'my-app-auth'
+JWT_AUTH_REFRESH_COOKE = 'my-refresh-token'
+JWT_AUTH_SAMESITE = 'None'
+
