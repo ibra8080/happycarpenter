@@ -50,10 +50,13 @@ ALLOWED_HOSTS = [
 CSRF_TRUSTED_ORIGINS = ['https://8000-ibra8080-happycarpenter-oxrz2os0tx6.ws.codeinstitute-ide.net']
 
 CORS_ALLOWED_ORIGINS = [
-    'https://8000-ibra8080-happycarpenter-oxrz2os0tx6.ws.codeinstitute-ide.net'
+    'https://8000-ibra8080-happycarpenter-oxrz2os0tx6.ws.codeinstitute-ide.net',
+    'https://happy-carpenter.herokuapp.com'
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+
 
 # Application definition
 
@@ -101,16 +104,7 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
 ]
 
-if 'CLIENT_ORIGIN' in os.environ:
-     CORS_ALLOWED_ORIGINS = [
-         os.environ.get('CLIENT_ORIGIN')
-     ]
-else:
-     CORS_ALLOWED_ORIGIN_REGEXES = [
-         r"^https://.*\.gitpod\.io$",
-     ]
 
-CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'happy_carpenter_api.urls'
 
@@ -143,19 +137,11 @@ WSGI_APPLICATION = 'happy_carpenter_api.wsgi.application'
 #     }
 # }
 
-if 'DEV' in os.environ:
-     DATABASES = {
-         'default': {
-             'ENGINE': 'django.db.backends.sqlite3',
-             'NAME': BASE_DIR / 'db.sqlite3',
-         }
-     }
-else:
-    DATABASES = {
-        'default': dj_database_url.config(
-            default='postgres://uct1b7j6rj0:sTcQSZdD5vip@ep-gentle-mountain-a23bxz6h-pooler.eu-central-1.aws.neon.tech/woven_blend_cone_604593',
-        )
-    }
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL')
+    )
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -191,7 +177,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
