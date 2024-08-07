@@ -35,23 +35,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'django-insecure-0li)j^65f2x$sk#+%1ez72ya27by-pdq_495_*h3qzu)iiozoa'
-SECRET_KEY = os.getenv('django-insecure-0li)j^65f2x$sk#+%1ez72ya27by-pdq_495_*h3qzu)iiozoa', "CreateANEWRandomValueHere")
+# SECRET_KEY = os.getenv('django-insecure-0li)j^65f2x$sk#+%1ez72ya27by-pdq_495_*h3qzu)iiozoa', "CreateANEWRandomValueHere")
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'DEV' in os.environ
 
-ALLOWED_HOSTS = [
-    '8000-ibra8080-happycarpenter-oxrz2os0tx6.ws.codeinstitute-ide.net',
-    'localhost',
-    'happy-carpenter.herokuapp.com',
-    '127.0.0.1',
-]
 
-CSRF_TRUSTED_ORIGINS = ['https://8000-ibra8080-happycarpenter-oxrz2os0tx6.ws.codeinstitute-ide.net']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
+
+CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', '').split(',')
+
 
 CORS_ALLOWED_ORIGINS = [
-    'https://8000-ibra8080-happycarpenter-oxrz2os0tx6.ws.codeinstitute-ide.net',
-    'https://happy-carpenter.herokuapp.com'
+    'https://happy-carpenter-ebf6de9467cb.herokuapp.com',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -95,7 +92,6 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -229,6 +225,6 @@ SIMPLE_JWT = {
 }
 
 JWT_AUTH_COOKIE = 'my-app-auth'
-JWT_AUTH_REFRESH_COOKE = 'my-refresh-token'
 JWT_AUTH_SAMESITE = 'None'
+JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
 
