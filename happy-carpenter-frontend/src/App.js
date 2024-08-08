@@ -1,13 +1,27 @@
 import React from 'react';
-import { Container, Button } from 'react-bootstrap';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Container } from 'react-bootstrap';
+import NavBar from './components/NavBar';
+import Home from './components/Home';
+import RegisterForm from './components/RegisterForm';
+import LoginForm from './components/LoginForm';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <h1>Hallo Carpenter</h1>
-      <Button variant="primary">Click me</Button>
-    </div>
+    <Router>
+      <div className="App">
+        <NavBar />
+        <Container>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/register" element={<RegisterForm />} />
+            <Route path="/login" element={<LoginForm />} />
+          </Routes>
+        </Container>
+      </div>
+    </Router>
   );
 }
 
