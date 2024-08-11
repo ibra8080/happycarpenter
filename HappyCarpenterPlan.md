@@ -23,10 +23,10 @@
 - [x] Set up categories/tags system (3 hours)
 
 ### Day 5 (8 hours)
-- [ ] Set up React project (1 hour)
+- [x] Set up React project (1 hour)
 - [ ] Create basic components: Header, Footer, PostList (3 hours)
-- [ ] Implement routing with React Router (2 hours)
-- [ ] Start on user registration and login forms (2 hours)
+- [x] Implement routing with React Router (2 hours)
+- [x] Start on user registration and login forms (2 hours)
 
 ## Week 2
 
