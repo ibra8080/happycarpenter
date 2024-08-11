@@ -1,18 +1,36 @@
 import React, { useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Alert } from 'react-bootstrap';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function LoginForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log('Login submitted', { username, password });
-    // Here you would typically make an API call to log in the user
+    setError('');
+    try {
+      const response = await axios.post('/dj-rest-auth/login/', {
+        username,
+        password,
+      });
+      console.log('Login successful', response.data);
+      // Store the token in localStorage or in a state management solution
+      localStorage.setItem('token', response.data.key);
+      // Redirect to home page or dashboard
+      navigate('/');
+    } catch (err) {
+      setError('Login failed. Please check your credentials.');
+      console.error('Login error', err.response?.data);
+    }
   };
 
   return (
     <Form onSubmit={handleSubmit}>
+      {error && <Alert variant="danger">{error}</Alert>}
       <Form.Group className="mb-3" controlId="formBasicUsername">
         <Form.Label>Username</Form.Label>
         <Form.Control 
@@ -20,6 +38,7 @@ function LoginForm() {
           placeholder="Enter username" 
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          required
         />
       </Form.Group>
 
@@ -30,6 +49,7 @@ function LoginForm() {
           placeholder="Password" 
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
       </Form.Group>
 
@@ -41,4 +61,3 @@ function LoginForm() {
 }
 
 export default LoginForm;
-
