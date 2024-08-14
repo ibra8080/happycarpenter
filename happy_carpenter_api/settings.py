@@ -10,7 +10,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-
 DEBUG = 'DEV' in os.environ
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
@@ -20,6 +19,7 @@ CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "https://happy-carpenter-front-26472ba73a7c.herokuapp.com",
     "https://3000-ibra8080-happycarpenter-qz8jupu39kt.ws.codeinstitute-ide.net",
+    
 ]
 CORS_ALLOW_CREDENTIALS = True
 
@@ -110,6 +110,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Media files
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Cloudinary settings
@@ -172,4 +174,5 @@ CSRF_TRUSTED_ORIGINS = [
     'https://happy-carpenter-front-26472ba73a7c.herokuapp.com',
     'https://3000-ibra8080-happycarpenter-qz8jupu39kt.ws.codeinstitute-ide.net',
     'https://8080-ibra8080-happycarpenter-oxrz2os0tx6.ws.codeinstitute-ide.net',
+    "https://8000-ibra8080-happycarpenter-oxrz2os0tx6.ws.codeinstitute-ide.net",
 ]

@@ -19,12 +19,13 @@ class RegisterSerializer(serializers.ModelSerializer):
     portfolio_url = serializers.URLField(required=False, write_only=True)
     interests = serializers.ListField(child=serializers.CharField(max_length=100), required=False, write_only=True)
     address = serializers.CharField(max_length=255, required=False, write_only=True)
+    profile_image = serializers.ImageField(required=False, write_only=True)
 
     class Meta:
         model = User
         fields = ('username', 'password', 'password2', 'email', 'first_name', 'last_name',
                   'user_type', 'years_of_experience', 'specialties', 'portfolio_url',
-                  'interests', 'address')
+                  'interests', 'address', 'profile_image')
         extra_kwargs = {
             'first_name': {'required': True},
             'last_name': {'required': True}
@@ -43,6 +44,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        print("Received data:", validated_data)
         # Remove profile-specific data
         user_type = validated_data.pop('user_type', 'amateur')
         years_of_experience = validated_data.pop('years_of_experience', None)
@@ -50,6 +52,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         portfolio_url = validated_data.pop('portfolio_url', '')
         interests = validated_data.pop('interests', [])
         address = validated_data.pop('address', '')
+        profile_image = validated_data.pop('profile_image', None)
         
         # Remove password2 field
         validated_data.pop('password2', None)
@@ -67,8 +70,9 @@ class RegisterSerializer(serializers.ModelSerializer):
                 'portfolio_url': portfolio_url,
                 'interests': interests,
                 'address': address,
-                'name': user.get_full_name()
+                'name': user.get_full_name(),
+                'image': profile_image
             }
-        )
+        )[0]
 
         return user
