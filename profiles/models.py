@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.postgres.fields import ArrayField
+from cloudinary.models import CloudinaryField
+
 
 class Profile(models.Model):
     USER_TYPE_CHOICES = [
@@ -15,9 +17,10 @@ class Profile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=255, blank=True)
     content = models.TextField(blank=True)
-    image = models.ImageField(
-        upload_to='images/', default='../default_profile_qdjgyp'
-    )
+    image = CloudinaryField('image', default='default_profile_qdjgyp')
+    # image = models.ImageField(
+    #     upload_to='images/', default='../default_profile_qdjgyp'
+    # )
     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='amateur')
     years_of_experience = models.PositiveIntegerField(null=True, blank=True)
     specialties = models.CharField(max_length=255, blank=True)
