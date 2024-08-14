@@ -52,6 +52,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         portfolio_url = validated_data.pop('portfolio_url', '')
         interests = validated_data.pop('interests', [])
         address = validated_data.pop('address', '')
+        print("Received data:", validated_data)  # For debugging
         profile_image = validated_data.pop('profile_image', None)
         
         # Remove password2 field
