@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from profiles.models import Profile
+from rest_framework_simplejwt.tokens import RefreshToken
+from profiles.serializers import ProfileSerializer
 
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
@@ -44,7 +46,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        print("Received data:", validated_data)
         # Remove profile-specific data
         user_type = validated_data.pop('user_type', 'amateur')
         years_of_experience = validated_data.pop('years_of_experience', None)
@@ -52,7 +53,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         portfolio_url = validated_data.pop('portfolio_url', '')
         interests = validated_data.pop('interests', [])
         address = validated_data.pop('address', '')
-        print("Received data:", validated_data)  # For debugging
         profile_image = validated_data.pop('profile_image', None)
         
         # Remove password2 field
@@ -62,7 +62,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
 
         # Create or update profile
-        Profile.objects.update_or_create(
+        profile, _ = Profile.objects.update_or_create(
             owner=user,
             defaults={
                 'user_type': user_type,
@@ -72,8 +72,29 @@ class RegisterSerializer(serializers.ModelSerializer):
                 'interests': interests,
                 'address': address,
                 'name': user.get_full_name(),
-                'image': profile_image
+                'image': profile_image if profile_image else 'https://res.cloudinary.com/ds5wgelgc/image/upload/v1722748736/default_profile_azwy8y.jpg'
             }
-        )[0]
+        )
 
-        return user
+        # Generate token
+        refresh = RefreshToken.for_user(user)
+
+        return {
+            'user': user,
+            'profile': profile,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
+
+    def to_representation(self, instance):
+        """
+        Object instance -> Dict of primitive datatypes.
+        """
+        user_data = super().to_representation(instance['user'])
+        profile = ProfileSerializer(instance['profile']).data
+        return {
+            **user_data,
+            'profile': profile,
+            'refresh': instance['refresh'],
+            'access': instance['access'],
+        }
