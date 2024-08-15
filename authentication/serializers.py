@@ -72,7 +72,7 @@ class RegisterSerializer(serializers.ModelSerializer):
                 'interests': interests,
                 'address': address,
                 'name': user.get_full_name(),
-                'image': profile_image if profile_image else 'https://res.cloudinary.com/ds5wgelgc/image/upload/v1722748736/default_profile_azwy8y.jpg'
+                'image': profile_image if profile_image else 'default_profile_azwy8y'
             }
         )
 
