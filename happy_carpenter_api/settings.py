@@ -20,6 +20,8 @@ CORS_ALLOWED_ORIGINS = [
     "https://happy-carpenter-front-26472ba73a7c.herokuapp.com",
     "https://3000-ibra8080-happycarpenter-qz8jupu39kt.ws.codeinstitute-ide.net",
     "https://happy-carpenter-front-26472ba73a7c.herokuapp.com",
+    "http://localhost:3000",
+    "https://your-frontend-domain.com",
     
 ]
 CORS_ALLOW_CREDENTIALS = True
@@ -136,6 +138,7 @@ REST_FRAMEWORK = {
     'DATETIME_FORMAT': '%d %b %Y',
 }
 
+
 if 'DEV' not in os.environ:
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = [
         'rest_framework.renderers.JSONRenderer',
@@ -154,7 +157,11 @@ REST_AUTH = {
     'JWT_AUTH_REFRESH_COOKIE': 'my-refresh-token',
     'JWT_AUTH_SECURE': True,
     'JWT_AUTH_HTTPONLY': True,
+    'JWT_AUTH_SAMESITE': 'None',
+    'JWT_AUTH_RETURN_EXPIRATION': True,
+    'SESSION_LOGIN': False,
 }
+
 
 # allauth settings
 ACCOUNT_EMAIL_REQUIRED = False
@@ -167,7 +174,17 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': False,
+    'ALGORITHM': 'HS256',
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+    'JWK_URL': None,
+    'LEEWAY': 0,
 }
+
 
 # Custom user serializer
 REST_AUTH_SERIALIZERS = {'USER_DETAILS_SERIALIZER': 'happy_carpenter_api.serializers.CurrentUserSerializer'}

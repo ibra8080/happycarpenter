@@ -16,9 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from .authentication import CustomObtainAuthToken
 from .views import root_route
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,8 +27,6 @@ urlpatterns = [
     path('', include('likes.urls')),
     path('', include('follows.urls')),
     path('', include('professionals.urls')),
-    path('auth/', include('authentication.urls')),
-    path('api/token/', CustomObtainAuthToken.as_view(), name='api_token_auth'),
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
 ]
