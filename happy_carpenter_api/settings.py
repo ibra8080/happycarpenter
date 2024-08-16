@@ -17,11 +17,10 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
 # CORS settings
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
-    "https://happy-carpenter-front-26472ba73a7c.herokuapp.com",
     "https://3000-ibra8080-happycarpenter-qz8jupu39kt.ws.codeinstitute-ide.net",
-    "https://happy-carpenter-front-26472ba73a7c.herokuapp.com",
     "http://localhost:3000",
-    "https://your-frontend-domain.com",
+    "https://happy-carpenter-front-26472ba73a7c.herokuapp.com",
+    "https://happy-carpenter-front-26472ba73a7c.herokuapp.com",
     
 ]
 CORS_ALLOW_CREDENTIALS = True
@@ -130,8 +129,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # REST Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'dj_rest_auth.jwt_auth.JWTCookieAuthentication'
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
@@ -191,8 +190,9 @@ REST_AUTH_SERIALIZERS = {'USER_DETAILS_SERIALIZER': 'happy_carpenter_api.seriali
 
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
-    'https://happy-carpenter-front-26472ba73a7c.herokuapp.com',
     'https://3000-ibra8080-happycarpenter-qz8jupu39kt.ws.codeinstitute-ide.net',
+    'http://localhost:3000',
+    'https://happy-carpenter-front-26472ba73a7c.herokuapp.com',
     'https://8080-ibra8080-happycarpenter-oxrz2os0tx6.ws.codeinstitute-ide.net',
     "https://8000-ibra8080-happycarpenter-oxrz2os0tx6.ws.codeinstitute-ide.net",
     'https://happy-carpenter-front-26472ba73a7c.herokuapp.com',
