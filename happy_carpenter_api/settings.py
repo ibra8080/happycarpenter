@@ -155,7 +155,7 @@ REST_AUTH = {
     'JWT_AUTH_COOKIE': 'my-app-auth',
     'JWT_AUTH_REFRESH_COOKIE': 'my-refresh-token',
     'JWT_AUTH_SECURE': True,
-    'JWT_AUTH_HTTPONLY': True,
+    'JWT_AUTH_HTTPONLY': False,
     'JWT_AUTH_SAMESITE': 'None',
     'JWT_AUTH_RETURN_EXPIRATION': True,
     'SESSION_LOGIN': False,
@@ -186,7 +186,10 @@ SIMPLE_JWT = {
 
 
 # Custom user serializer
-REST_AUTH_SERIALIZERS = {'USER_DETAILS_SERIALIZER': 'happy_carpenter_api.serializers.CurrentUserSerializer'}
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'happy_carpenter_api.serializers.CurrentUserSerializer',
+    'TOKEN_SERIALIZER': 'dj_rest_auth.serializers.TokenSerializer',
+}
 
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
