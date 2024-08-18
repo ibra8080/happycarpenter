@@ -76,4 +76,3 @@ class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsOwnerOrReadOnly]
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
-
