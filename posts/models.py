@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from cloudinary.models import CloudinaryField
 
+
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
@@ -25,7 +26,18 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=255)
     content = models.TextField(blank=True)
-    image = CloudinaryField('image', blank=True, null=True)
+    image = CloudinaryField(
+        'image',
+        folder='happy_carpenter',  
+        blank=True,
+        null=True,
+        transformation={
+            'width': 1000,
+            'height': 1000,
+            'crop': 'limit'
+        },
+        resource_type='auto'
+    )
     image_filter = models.CharField(
         max_length=32, choices=image_filter_choices, default='normal'
     )

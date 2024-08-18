@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Post, Comment, Category
 from django.contrib.humanize.templatetags.humanize import naturaltime
+from cloudinary.utils import cloudinary_url
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -29,6 +30,12 @@ class PostSerializer(serializers.ModelSerializer):
     is_owner = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
+    image = serializers.SerializerMethodField()
+
+    def get_image(self, obj):
+        if obj.image:
+            return cloudinary_url(obj.image.public_id)[0]
+        return None
 
     def validate_image(self, value):
         if value is None:
