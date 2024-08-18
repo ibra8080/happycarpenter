@@ -10,11 +10,21 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 
-cloudinary.config(
-    cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    api_key = os.environ.get('CLOUDINARY_API_KEY'),
-    api_secret = os.environ.get('CLOUDINARY_API_SECRET')
-)
+cloudinary_url = os.environ.get('CLOUDINARY_URL')
+if cloudinary_url:
+    cloudinary_parts = urllib.parse.urlparse(cloudinary_url)
+    cloudinary.config(
+        cloud_name=cloudinary_parts.hostname,
+        api_key=cloudinary_parts.username,
+        api_secret=cloudinary_parts.password
+    )
+else:
+    # Fallback to separate environment variables (for local development)
+    cloudinary.config(
+        cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME'),
+        api_key=os.environ.get('CLOUDINARY_API_KEY'),
+        api_secret=os.environ.get('CLOUDINARY_API_SECRET')
+    )
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
