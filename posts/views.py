@@ -11,6 +11,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+    
 class PostList(generics.ListCreateAPIView):
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -20,24 +21,26 @@ class PostList(generics.ListCreateAPIView):
     # search_fields = ['title', 'content', 'owner__username', 'categories__name']
     # ordering_fields = ['created_at', 'updated_at']
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-    
-    def list(self, request, *args, **kwargs):
-        logger.error("Entering PostList view")
-        try:
-            return super().list(request, *args, **kwargs)
-        except Exception as e:
-            logger.error(f"Error in PostList view: {str(e)}")
-            raise
+    def create(self, request, *args, **kwargs):
+        logger.info(f"Received POST request. Data: {request.data}")
+        logger.info(f"Files: {request.FILES}")
+        
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            logger.info("Serializer is valid")
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            logger.info(f"Post created successfully. Data: {serializer.data}")
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        else:
+            logger.error(f"Serializer errors: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def perform_create(self, serializer):
-        logger.error("Attempting to create post")
-        try:
-            serializer.save(owner=self.request.user)
-        except Exception as e:
-            logger.error(f"Error creating post: {str(e)}")
-            raise
+        logger.info("Performing create")
+        serializer.save(owner=self.request.user)
+
+
 
 class CategoryList(generics.ListCreateAPIView):
     queryset = Category.objects.all()
