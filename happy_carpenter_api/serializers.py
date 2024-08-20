@@ -1,9 +1,16 @@
 from dj_rest_auth.serializers import UserDetailsSerializer
 from rest_framework import serializers
+from profiles.serializers import ProfileSerializer
 
 class CurrentUserSerializer(UserDetailsSerializer):
-    profile_id = serializers.ReadOnlyField(source='profile.id')
-    profile_image = serializers.ImageField(source='profile.image', read_only=True)
+    profile = ProfileSerializer(read_only=True)
 
     class Meta(UserDetailsSerializer.Meta):
-        fields = UserDetailsSerializer.Meta.fields + ('profile_id', 'profile_image')
+        fields = UserDetailsSerializer.Meta.fields + ('profile',)
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        profile = instance.profile_set.first()
+        if profile:
+            representation['profile'] = ProfileSerializer(profile, context=self.context).data
+        return representation
