@@ -7,6 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from profiles.serializers import ProfileSerializer
 
 
+
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=False,
@@ -55,6 +56,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         interests = validated_data.pop('interests', [])
         address = validated_data.pop('address', '')
         profile_image = validated_data.pop('profile_image', None)
+        Profile.objects.create(owner=user)
         
         # Remove password2 field
         validated_data.pop('password2', None)
