@@ -6,8 +6,6 @@ from profiles.models import Profile
 from rest_framework_simplejwt.tokens import RefreshToken
 from profiles.serializers import ProfileSerializer
 
-
-
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=False,
@@ -56,7 +54,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         interests = validated_data.pop('interests', [])
         address = validated_data.pop('address', '')
         profile_image = validated_data.pop('profile_image', None)
-        Profile.objects.create(owner=user)
         
         # Remove password2 field
         validated_data.pop('password2', None)
@@ -64,19 +61,17 @@ class RegisterSerializer(serializers.ModelSerializer):
         # Create user
         user = User.objects.create_user(**validated_data)
 
-        # Create or update profile
-        profile, _ = Profile.objects.update_or_create(
+        # Create profile
+        profile = Profile.objects.create(
             owner=user,
-            defaults={
-                'user_type': user_type,
-                'years_of_experience': years_of_experience,
-                'specialties': specialties,
-                'portfolio_url': portfolio_url,
-                'interests': interests,
-                'address': address,
-                'name': user.get_full_name(),
-                'image': profile_image if profile_image else 'default_profile_azwy8y'
-            }
+            user_type=user_type,
+            years_of_experience=years_of_experience,
+            specialties=specialties,
+            portfolio_url=portfolio_url,
+            interests=interests,
+            address=address,
+            name=user.get_full_name(),
+            image=profile_image if profile_image else 'default_profile_azwy8y'
         )
 
         # Generate token
@@ -93,11 +88,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         """
         Object instance -> Dict of primitive datatypes.
         """
-        ret = super().to_representation(instance['user'])
+        user_data = super().to_representation(instance['user'])
         profile = ProfileSerializer(instance['profile']).data
-        ret.update({
+        return {
+            **user_data,
             'profile': profile,
             'refresh': instance['refresh'],
             'access': instance['access'],
-        })
-        return ret
+        }
