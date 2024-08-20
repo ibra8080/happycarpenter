@@ -6,6 +6,7 @@ from profiles.models import Profile
 from rest_framework_simplejwt.tokens import RefreshToken
 from profiles.serializers import ProfileSerializer
 
+
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=False,
@@ -90,11 +91,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         """
         Object instance -> Dict of primitive datatypes.
         """
-        user_data = super().to_representation(instance['user'])
+        ret = super().to_representation(instance['user'])
         profile = ProfileSerializer(instance['profile']).data
-        return {
-            **user_data,
+        ret.update({
             'profile': profile,
             'refresh': instance['refresh'],
             'access': instance['access'],
-        }
+        })
+        return ret
