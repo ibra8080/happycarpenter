@@ -4,9 +4,10 @@ from profiles.serializers import ProfileSerializer
 
 class CurrentUserSerializer(UserDetailsSerializer):
     profile = ProfileSerializer(read_only=True)
+    id = serializers.IntegerField(source='pk', read_only=True)
 
     class Meta(UserDetailsSerializer.Meta):
-        fields = UserDetailsSerializer.Meta.fields + ('profile',)
+        fields = UserDetailsSerializer.Meta.fields + ('profile', 'id')
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
