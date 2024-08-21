@@ -10,7 +10,7 @@ class CurrentUserSerializer(UserDetailsSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        profile = instance.profile_set.first()
+        profile = instance.profile
         if profile:
             representation['profile'] = ProfileSerializer(profile, context=self.context).data
         return representation
