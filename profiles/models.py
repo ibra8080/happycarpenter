@@ -34,9 +34,11 @@ class Profile(models.Model):
 
 @receiver(post_save, sender=User)
 def create_or_update_user_profile(sender, instance, created, **kwargs):
-    Profile.objects.update_or_create(
-        owner=instance,
-        defaults={
-            'name': instance.get_full_name(),
-        }
-    )
+    if created:
+        Profile.objects.create(
+            owner=instance,
+            name=instance.get_full_name(),
+        )
+    else:
+        instance.profile.name = instance.get_full_name()
+        instance.profile.save()
