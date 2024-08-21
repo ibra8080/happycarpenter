@@ -13,6 +13,7 @@ class CustomUserDetailsView(UserDetailsView):
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
         if request.user.is_authenticated:
-            profile_data = CurrentUserSerializer(request.user).data.get('profile')
+            profile_data = CurrentUserSerializer(
+                request.user).data.get('profile')
             response.data['profile'] = profile_data
         return response
