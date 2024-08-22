@@ -2,13 +2,14 @@ from rest_framework import serializers
 from .models import Post, Comment, Category
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from cloudinary.utils import cloudinary_url
+import logging
 
+logger = logging.getLogger(__name__)
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name']
-
 
 class CommentSerializer(serializers.ModelSerializer):
     created_at = serializers.SerializerMethodField()
@@ -24,13 +25,12 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ['id', 'owner', 'post', 'created_at', 'updated_at', 'content']
 
-
 class PostSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source='owner.profile.id')
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
-    image = serializers.SerializerMethodField()
+    image = serializers.ImageField(required=False)
 
     def get_image(self, obj):
         if obj.image:
@@ -49,7 +49,6 @@ class PostSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError('Image width larger than 4096px!')
         return value
 
-
     def get_is_owner(self, obj):
         request = self.context['request']
         return request.user == obj.owner
@@ -66,18 +65,30 @@ class PostSerializer(serializers.ModelSerializer):
         ]
     
     def create(self, validated_data):
+        logger.info(f"Creating post with data: {validated_data}")
         categories_data = validated_data.pop('categories', [])
+        image = validated_data.pop('image', None)
         post = Post.objects.create(**validated_data)
+        if image:
+            post.image = image
+            post.save()
         for category_data in categories_data:
             category, _ = Category.objects.get_or_create(**category_data)
             post.categories.add(category)
+        logger.info(f"Post created successfully: {post}")
         return post
 
     def update(self, instance, validated_data):
+        logger.info(f"Updating post {instance.id} with data: {validated_data}")
         categories_data = validated_data.pop('categories', [])
+        image = validated_data.pop('image', None)
         instance = super().update(instance, validated_data)
+        if image:
+            instance.image = image
+            instance.save()
         instance.categories.clear()
         for category_data in categories_data:
             category, _ = Category.objects.get_or_create(**category_data)
             instance.categories.add(category)
+        logger.info(f"Post {instance.id} updated successfully")
         return instance
