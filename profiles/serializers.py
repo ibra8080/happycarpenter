@@ -7,26 +7,22 @@ class ProfileSerializer(serializers.ModelSerializer):
     is_owner = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
 
+    class Meta:
+        model = Profile
+        fields = ['id', 'owner', 'created_at', 'updated_at', 'name',
+                  'content', 'image', 'is_owner', 'user_type',
+                  'years_of_experience', 'specialties', 'portfolio_url',
+                  'interests', 'address']
+
     def get_is_owner(self, obj):
         request = self.context['request']
         return request.user == obj.owner
 
     def get_image(self, obj):
-        if isinstance(obj.image, CloudinaryResource):
+        if obj.image:
             return obj.image.url
-        if isinstance(obj.image, str) and obj.image.startswith('http'):
-            return obj.image
-        return f'https://res.cloudinary.com/ds5wgelgc/image/upload/{obj.image}'
-
-    class Meta:
-        model = Profile
-        fields = [
-            'id', 'owner', 'created_at', 'updated_at', 'name',
-            'content', 'image', 'is_owner', 'user_type',
-            'years_of_experience', 'specialties', 'portfolio_url',
-            'interests', 'address'
-        ]
-        read_only_fields = ['owner']
+        return 'https://res.cloudinary.com/your-cloud-name/image/upload/v1/default_profile_azwy8y'
+        
 
     def update(self, instance, validated_data):
         for attr, value in validated_data.items():

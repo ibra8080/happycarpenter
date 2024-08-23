@@ -47,14 +47,16 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # Remove profile-specific data
-        user_type = validated_data.pop('user_type')
-        years_of_experience = validated_data.pop('years_of_experience', None)
-        specialties = validated_data.pop('specialties', '')
-        portfolio_url = validated_data.pop('portfolio_url', '')
-        interests = validated_data.pop('interests', [])
-        address = validated_data.pop('address', '')
+        profile_data = {
+            'user_type': validated_data.pop('user_type', 'amateur'),
+            'years_of_experience': validated_data.pop('years_of_experience', None),
+            'specialties': validated_data.pop('specialties', ''),
+            'portfolio_url': validated_data.pop('portfolio_url', ''),
+            'interests': validated_data.pop('interests', []),
+            'address': validated_data.pop('address', ''),
+        }
         profile_image = validated_data.pop('profile_image', None)
-        
+    
         # Remove password2 field
         validated_data.pop('password2', None)
 
@@ -64,14 +66,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         # Create profile
         profile = Profile.objects.create(
             owner=user,
-            user_type=user_type,
-            years_of_experience=years_of_experience,
-            specialties=specialties,
-            portfolio_url=portfolio_url,
-            interests=interests,
-            address=address,
-            name=user.get_full_name(),
-            image=profile_image if profile_image else 'default_profile_azwy8y'
+            name=f"{user.first_name} {user.last_name}",
+            image=profile_image if profile_image else 'default_profile_azwy8y',
+            **profile_data
         )
 
         # Generate token
@@ -88,12 +85,23 @@ class RegisterSerializer(serializers.ModelSerializer):
         """
         Object instance -> Dict of primitive datatypes.
         """
-        user_data = super().to_representation(instance['user'])
-        profile = ProfileSerializer(instance['profile']).data
-        return {
-            **user_data,
-            'profile': profile,
-            'refresh': instance['refresh'],
-            'access': instance['access'],
-        }
+        if isinstance(instance, dict):
+            # This is the case when returning from create method
+            user_data = super().to_representation(instance['user'])
+            profile_data = ProfileSerializer(instance['profile']).data
+            return {
+                **user_data,
+                'profile': profile_data,
+                'refresh': instance['refresh'],
+                'access': instance['access'],
+            }
+        else:
+            # This is the case when the instance is a User object
+            user_data = super().to_representation(instance)
+            profile_data = ProfileSerializer(instance.profile).data
+            return {
+                **user_data,
+                'profile': profile_data,
+            }
+            
         
