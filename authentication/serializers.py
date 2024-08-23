@@ -6,7 +6,6 @@ from profiles.models import Profile
 from rest_framework_simplejwt.tokens import RefreshToken
 from profiles.serializers import ProfileSerializer
 
-
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=False,
@@ -75,7 +74,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             image=profile_image if profile_image else 'default_profile_azwy8y'
         )
 
-
         # Generate token
         refresh = RefreshToken.for_user(user)
 
@@ -85,7 +83,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
-        
 
     def to_representation(self, instance):
         """
