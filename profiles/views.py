@@ -8,7 +8,6 @@ from happy_carpenter_api.permissions import IsOwnerOrReadOnly
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 
-
 class ProfileList(APIView):
     """
     List all profiles
@@ -54,3 +53,10 @@ class ProfileDetail(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk):
+        profile = self.get_object(pk)
+        user = profile.owner
+        profile.delete()
+        user.delete()  
+        return Response(status=status.HTTP_204_NO_CONTENT)
