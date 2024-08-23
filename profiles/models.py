@@ -5,7 +5,6 @@ from django.dispatch import receiver
 from django.contrib.postgres.fields import ArrayField
 from cloudinary.models import CloudinaryField
 
-
 class Profile(models.Model):
     USER_TYPE_CHOICES = [
         ('amateur', 'Amateur'),
@@ -18,7 +17,7 @@ class Profile(models.Model):
     name = models.CharField(max_length=255, blank=True)
     content = models.TextField(blank=True)
     image = CloudinaryField('image', default='default_profile_azwy8y')
- 
+    
     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default='amateur')
     years_of_experience = models.PositiveIntegerField(null=True, blank=True)
     specialties = models.CharField(max_length=255, blank=True)
@@ -32,11 +31,10 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.owner}'s profile"
 
-    @receiver(post_save, sender=User)
-    def create_profile(sender, instance, created, **kwargs):
-        if created:
-            Profile.objects.create(owner=instance)
-
-    @receiver(post_save, sender=User)
-    def save_profile(sender, instance, **kwargs):
+@receiver(post_save, sender=User)
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(owner=instance, name=instance.get_full_name())
+    else:
+        instance.profile.name = instance.get_full_name()
         instance.profile.save()
