@@ -56,7 +56,5 @@ class ProfileDetail(APIView):
     
     def delete(self, request, pk):
         profile = self.get_object(pk)
-        user = profile.owner
         profile.delete()
-        user.delete()  
         return Response(status=status.HTTP_204_NO_CONTENT)
