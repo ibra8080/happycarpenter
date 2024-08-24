@@ -1,3 +1,30 @@
+from django.http import Http404
+from rest_framework import status, permissions
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import Profile
+from .serializers import ProfileSerializer
+from happy_carpenter_api.permissions import IsOwnerOrReadOnly
+from rest_framework.parsers import MultiPartParser, FormParser
+
+class ProfileList(APIView):
+    """
+    List all profiles
+    No Create view (post method), as profile creation handled by django signals
+    """
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get(self, request):
+        profiles = Profile.objects.all()
+        serializer = ProfileSerializer(
+            profiles, many=True, context={'request': request}
+        )
+        return Response(serializer.data)
+
+import logging
+
+logger = logging.getLogger(__name__)
+
 import logging
 
 logger = logging.getLogger(__name__)
