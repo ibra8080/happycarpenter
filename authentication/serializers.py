@@ -56,7 +56,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             'address': validated_data.pop('address', ''),
         }
         profile_image = validated_data.pop('profile_image', None)
-    
+
         # Remove password2 field
         validated_data.pop('password2', None)
 
@@ -80,6 +80,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
+
 
     def to_representation(self, instance):
         """
