@@ -104,5 +104,3 @@ class RegisterSerializer(serializers.ModelSerializer):
                 **user_data,
                 'profile': profile_data,
             }
-            
-        
