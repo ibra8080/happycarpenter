@@ -1,3 +1,6 @@
+import logging
+logger = logging.getLogger(__name__)
+
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = (AllowAny,)
