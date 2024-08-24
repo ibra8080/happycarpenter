@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from cloudinary.models import CloudinaryResource
 from .models import Profile
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -35,8 +34,3 @@ class ProfileSerializer(serializers.ModelSerializer):
                 setattr(instance, attr, value)
         instance.save()
         return instance
-
-    def to_representation(self, instance):
-        ret = super().to_representation(instance)
-        ret['image'] = self.get_image(instance)
-        return ret
