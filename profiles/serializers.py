@@ -4,7 +4,7 @@ from .models import Profile
 class ProfileSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
-    image = serializers.ImageField(required=False)
+    image = serializers.ImageField(required=False, allow_null=True)
     interests = serializers.ListField(child=serializers.CharField(), required=False)
 
     class Meta:
@@ -18,19 +18,23 @@ class ProfileSerializer(serializers.ModelSerializer):
         request = self.context['request']
         return request.user == obj.owner
 
+    def get_image_url(self, obj):
+        if obj.image and hasattr(obj.image, 'url'):
+            return obj.image.url
+        return 'https://res.cloudinary.com/ds5wgelgc/image/upload/v1722748736/default_post_ixahqa.jpg'
+
     def to_representation(self, instance):
         ret = super().to_representation(instance)
-        if instance.image:
-            ret['image'] = instance.image.url
-        else:
-            ret['image'] = 'https://res.cloudinary.com/ds5wgelgc/image/upload/v1722748736/default_post_ixahqa.jpg'
+        ret['image'] = self.get_image_url(instance)
         return ret
 
     def update(self, instance, validated_data):
+        interests = validated_data.pop('interests', None)
+        if interests is not None:
+            instance.interests = interests
+
         for attr, value in validated_data.items():
-            if attr == 'interests':
-                setattr(instance, attr, value or [])
-            else:
-                setattr(instance, attr, value)
+            setattr(instance, attr, value)
+
         instance.save()
         return instance

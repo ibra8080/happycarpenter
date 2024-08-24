@@ -21,6 +21,10 @@ class ProfileList(APIView):
         )
         return Response(serializer.data)
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 class ProfileDetail(APIView):
     serializer_class = ProfileSerializer
     permission_classes = [IsOwnerOrReadOnly]
@@ -35,11 +39,18 @@ class ProfileDetail(APIView):
             raise Http404
 
     def get(self, request, pk):
-        profile = self.get_object(pk)
-        serializer = ProfileSerializer(
-            profile, context={'request': request}
-        )
-        return Response(serializer.data)
+        try:
+            profile = self.get_object(pk)
+            serializer = ProfileSerializer(
+                profile, context={'request': request}
+            )
+            return Response(serializer.data)
+        except Http404:
+            logger.warning(f"Profile not found for pk: {pk}")
+            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            logger.error(f"Error in ProfileDetail get: {str(e)}")
+            return Response({"detail": "An error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def put(self, request, pk):
         profile = self.get_object(pk)
