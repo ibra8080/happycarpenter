@@ -1,33 +1,30 @@
 from django.http import Http404
-from rest_framework import status, generics, permissions
+from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Profile
 from .serializers import ProfileSerializer
 from happy_carpenter_api.permissions import IsOwnerOrReadOnly
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-
+from rest_framework.parsers import MultiPartParser, FormParser
 
 class ProfileList(APIView):
     """
     List all profiles
     No Create view (post method), as profile creation handled by django signals
     """
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
     def get(self, request):
         profiles = Profile.objects.all()
-        print(f"Number of profiles: {profiles.count()}")  # Debug print
         serializer = ProfileSerializer(
             profiles, many=True, context={'request': request}
         )
-        print(f"Serialized data: {serializer.data}")  # Debug print
         return Response(serializer.data)
-
-
 
 class ProfileDetail(APIView):
     serializer_class = ProfileSerializer
     permission_classes = [IsOwnerOrReadOnly]
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_object(self, pk):
         try:
@@ -47,12 +44,15 @@ class ProfileDetail(APIView):
     def put(self, request, pk):
         profile = self.get_object(pk)
         serializer = ProfileSerializer(
-            profile, data=request.data, context={'request': request}
+            profile, data=request.data, context={'request': request}, partial=True
         )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, pk):
+        return self.put(request, pk)
 
     def delete(self, request, pk):
         profile = self.get_object(pk)
