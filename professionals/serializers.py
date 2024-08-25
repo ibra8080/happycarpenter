@@ -18,6 +18,10 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = ['id', 'professional', 'reviewer', 'content', 'rating', 'created_at']
 
+    def create(self, validated_data):
+        return Review.objects.create(**validated_data)
+
+
 class JobOfferSerializer(serializers.ModelSerializer):
     professional = serializers.ReadOnlyField(source='professional.username')
     client = serializers.ReadOnlyField(source='client.username')

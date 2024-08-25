@@ -30,26 +30,24 @@ class ReviewList(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['professional']
 
-
     def perform_create(self, serializer):
         professional_id = self.request.data.get('professional')
         try:
             professional = User.objects.get(id=professional_id)
             if professional.profile.user_type != 'professional':
-                return Response({"error": "The user is not a professional."}, status=status.HTTP_400_BAD_REQUEST)
+                raise serializers.ValidationError({"professional": "The user is not a professional."})
         except User.DoesNotExist:
-            return Response({"error": "Professional not found."}, status=status.HTTP_404_NOT_FOUND)
+            raise serializers.ValidationError({"professional": "Professional not found."})
         
         serializer.save(reviewer=self.request.user, professional=professional)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        response = self.perform_create(serializer)
-        if isinstance(response, Response):
-            return response
+        self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 
 
