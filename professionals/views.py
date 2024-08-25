@@ -4,6 +4,7 @@ from .models import Advertisement, Review, JobOffer
 from .serializers import AdvertisementSerializer, ReviewSerializer, JobOfferSerializer
 from profiles.models import Profile
 from django.contrib.auth.models import User
+from django_filters.rest_framework import DjangoFilterBackend
 
 class IsProfessionalUser(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -26,6 +27,9 @@ class ReviewList(generics.ListCreateAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['professional']
+
 
     def perform_create(self, serializer):
         professional_id = self.request.data.get('professional')
