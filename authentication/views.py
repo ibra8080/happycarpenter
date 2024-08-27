@@ -1,6 +1,7 @@
 import logging
 logger = logging.getLogger(__name__)
 
+
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = (AllowAny,)
@@ -30,3 +31,4 @@ class RegisterView(generics.CreateAPIView):
         else:
             logger.warning(f"Invalid registration data: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            

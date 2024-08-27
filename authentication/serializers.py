@@ -6,28 +6,46 @@ from profiles.models import Profile
 from rest_framework_simplejwt.tokens import RefreshToken
 from profiles.serializers import ProfileSerializer
 
+
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all())]
     )
-    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    password = serializers.CharField(
+        write_only=True, required=True, validators=[validate_password]
+    )
     password2 = serializers.CharField(write_only=True, required=True)
 
     # Profile fields
-    user_type = serializers.ChoiceField(choices=Profile.USER_TYPE_CHOICES, required=True, write_only=True)
-    years_of_experience = serializers.IntegerField(required=False, allow_null=True, write_only=True)
-    specialties = serializers.CharField(required=False, allow_blank=True, write_only=True)
-    portfolio_url = serializers.URLField(required=False, allow_blank=True, write_only=True)
-    interests = serializers.ListField(child=serializers.CharField(max_length=100), required=False, write_only=True)
-    address = serializers.CharField(max_length=255, required=False, allow_blank=True, write_only=True)
+    user_type = serializers.ChoiceField(
+        choices=Profile.USER_TYPE_CHOICES, required=True, write_only=True
+    )
+    years_of_experience = serializers.IntegerField(
+        required=False, allow_null=True, write_only=True
+    )
+    specialties = serializers.CharField(
+        required=False, allow_blank=True, write_only=True
+    )
+    portfolio_url = serializers.URLField(
+        required=False, allow_blank=True, write_only=True
+    )
+    interests = serializers.ListField(
+        child=serializers.CharField(max_length=100),
+        required=False, write_only=True
+    )
+    address = serializers.CharField(
+        max_length=255, required=False, allow_blank=True, write_only=True
+    )
     profile_image = serializers.ImageField(required=False, write_only=True)
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'password2', 'first_name', 'last_name',
-                  'user_type', 'years_of_experience', 'specialties', 'portfolio_url',
-                  'interests', 'address', 'profile_image')
+        fields = (
+            'username', 'email', 'password', 'password2', 'first_name',
+            'last_name', 'user_type', 'years_of_experience', 'specialties',
+            'portfolio_url', 'interests', 'address', 'profile_image'
+        )
         extra_kwargs = {
             'first_name': {'required': True},
             'last_name': {'required': True}
@@ -35,14 +53,24 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
-            raise serializers.ValidationError({"password": "Password fields didn't match."})
-        
+            raise serializers.ValidationError(
+                {"password": "Password fields didn't match."}
+            )
+
         if attrs['user_type'] == 'professional':
             if attrs.get('years_of_experience') is None:
-                raise serializers.ValidationError({"years_of_experience": "This field is required for professional users."})
+                raise serializers.ValidationError({
+                    "years_of_experience": (
+                        "This field is required for professional users."
+                    )
+                })
             if not attrs.get('specialties'):
-                raise serializers.ValidationError({"specialties": "This field is required for professional users."})
-        
+                raise serializers.ValidationError({
+                    "specialties": (
+                        "This field is required for professional users."
+                    )
+                })
+
         return attrs
 
     def create(self, validated_data):
@@ -81,7 +109,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             'access': str(refresh.access_token),
         }
 
-
     def to_representation(self, instance):
         """
         Object instance -> Dict of primitive datatypes.
@@ -104,3 +131,4 @@ class RegisterSerializer(serializers.ModelSerializer):
                 **user_data,
                 'profile': profile_data,
             }
+            

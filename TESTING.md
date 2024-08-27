@@ -3,61 +3,7 @@
 > [!NOTE]  
 > Return back to the [README.md](README.md) file.
 
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-START OF NOTES (to be deleted)
-
-In this section, you need to convince the assessors that you have conducted enough testing to legitimately believe that the site works well.
-Essentially, in this part, you should go over all of your project's features, and ensure that they all work as intended,
-with the project providing an easy and straightforward way for the users to achieve their goals.
-
-Feature-by-Feature Testing:
-
-Go through each feature of your portfolio site and detail the testing process for each.
-
-Explain the functionality and demonstrate how it aligns with the intended purpose. This could include:
-
-- Navigation: Ensuring smooth transitions between pages, links directing to the correct destinations.
-- Responsive Design: Checking for compatibility across various devices and screen sizes.
-- Portfolio Display: Verifying that projects are properly showcased with accurate descriptions, images, and links.
-- Contact Form: Testing the form submission process, ensuring the user receives a confirmation, and you receive the message.
-
-User Experience Testing:
-
-- Usability Testing: Have users (or simulated users) interact with the site and provide feedback. Document any issues encountered and the resolutions implemented.
-- Accessibility Testing: Confirm compliance with accessibility standards (e.g., screen reader compatibility, proper alt text for images, keyboard navigation).
-
-Compatibility Testing:
-
-- Browser Compatibility: Testing on different browsers (Chrome, Firefox, Safari, Edge, etc.) to ensure consistent performance.
-- Device Compatibility: Ensuring functionality across various devices (desktops, laptops, tablets, and mobile phones).
-- Performance Testing (optional):
-	- Speed and Load Testing: Tools like PageSpeed Insights or GTmetrix to check page load times and optimize where necessary.
-	- Scalability Testing: Assess how the site handles increased traffic or usage.
-
-Regression Testing:
-
-After implementing fixes or updates, ensure that previous features and functionalities still work as intended. This prevents new changes from breaking existing features.
-
-Documentation and Logs:
-
-Maintain records of testing procedures, results, and any bugs encountered along with their resolutions. This helps demonstrate a systematic approach to testing and problem-solving.
-User Feedback Incorporation:
-
-If applicable, mention how user feedback has been taken into account and implemented to enhance the user experience.
-
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-END OF NOTES (to be deleted)
-
 ## Code Validation
-
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-START OF NOTES (to be deleted)
-
-Use the space to discuss code validation for any of your own code files (where applicable).
-You are not required to validate external libraries/frameworks, such as imported Bootstrap, Materialize, Font Awesome, etc.
-
-**IMPORTANT**: You must provide a screenshot for each file you validate.
-
-**PRO TIP**: Always validate the live site pages, not your local code. There could be subtle/hidden differences.
-
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-END OF NOTES (to be deleted)
 
 ### Python
 
@@ -65,39 +11,29 @@ I have used the recommended [PEP8 CI Python Linter](https://pep8ci.herokuapp.com
 
 | Directory | File | CI URL | Screenshot | Notes |
 | --- | --- | --- | --- | --- |
-| authentication | admin.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/authentication/admin.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| authentication | models.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/authentication/models.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| authentication | serializers.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/authentication/serializers.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| authentication | urls.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/authentication/urls.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| authentication | views.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/authentication/views.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| follows | admin.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/follows/admin.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| follows | models.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/follows/models.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| follows | serializers.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/follows/serializers.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| follows | urls.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/follows/urls.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| follows | views.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/follows/views.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| happy_carpenter_api | authentication.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/happy_carpenter_api/authentication.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| happy_carpenter_api | permissions.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/happy_carpenter_api/permissions.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| happy_carpenter_api | serializers.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/happy_carpenter_api/serializers.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| happy_carpenter_api | settings.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/happy_carpenter_api/settings.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| happy_carpenter_api | urls.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/happy_carpenter_api/urls.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| happy_carpenter_api | views.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/happy_carpenter_api/views.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| likes | admin.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/likes/admin.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| likes | models.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/likes/models.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| likes | serializers.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/likes/serializers.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
+| authentication | serializers.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/authentication/serializers.py) | ![screenshot](documentation/validation/p1.png) | |
+| authentication | urls.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/authentication/urls.py) | ![screenshot](documentation/validation/p2.png) | |
+| authentication | views.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/authentication/views.py) | ![screenshot](documentation/validation/p3.png) | |
+| follows | models.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/follows/models.py) | ![screenshot](documentation/validation/p4.png) | |
+| follows | serializers.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/follows/serializers.py) | ![screenshot](documentation/validation/p5.png) | |
+| follows | views.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/follows/views.py) | ![screenshot](documentation/validation/p6.png) | |
+| happy_carpenter_api | authentication.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/happy_carpenter_api/authentication.py) | ![screenshot](documentation/validation/p.png) | |
+| happy_carpenter_api | serializers.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/happy_carpenter_api/serializers.py) | ![screenshot](documentation/validation/p.png) | |
+| happy_carpenter_api | settings.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/happy_carpenter_api/settings.py) | ![screenshot](documentation/validation/p.png) | |
+| happy_carpenter_api | urls.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/happy_carpenter_api/urls.py) | ![screenshot](documentation/validation/p.png) | |
+| happy_carpenter_api | views.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/happy_carpenter_api/views.py) | ![screenshot](documentation/validation/p.png) | |
+| likes | models.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/likes/models.py) | ![screenshot](documentation/validation/p.png) | |
+| likes | serializers.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/likes/serializers.py) | ![screenshot](documentation/validation/p.png) | |
 | likes | urls.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/likes/urls.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
 | likes | views.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/likes/views.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-|  | manage.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/manage.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| posts | admin.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/posts/admin.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
 | posts | models.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/posts/models.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
 | posts | serializers.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/posts/serializers.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
 | posts | urls.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/posts/urls.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
 | posts | views.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/posts/views.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| professionals | admin.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/professionals/admin.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
 | professionals | models.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/professionals/models.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
 | professionals | serializers.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/professionals/serializers.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
 | professionals | urls.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/professionals/urls.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
 | professionals | views.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/professionals/views.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| profiles | admin.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/profiles/admin.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
 | profiles | models.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/profiles/models.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
 | profiles | serializers.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/profiles/serializers.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
 | profiles | urls.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/profiles/urls.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |

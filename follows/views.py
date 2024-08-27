@@ -3,6 +3,7 @@ from happy_carpenter_api.permissions import IsOwnerOrReadOnly
 from .models import Follow
 from .serializers import FollowSerializer
 
+
 class FollowList(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Follow.objects.all()
@@ -10,6 +11,7 @@ class FollowList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
 
 class FollowDetail(generics.RetrieveDestroyAPIView):
     permission_classes = [IsOwnerOrReadOnly]
