@@ -22,7 +22,86 @@ Happy Carpenter consists of two main components:
 
 This README focuses on the backend API, detailing its features, setup, and usage.
 
-![Project Structure](documentation/project-structure.png)
+
+```
+happycarpenter/
+│
+├── manage.py
+├── requirements.txt
+├── README.md
+├── TESTING.md
+│
+├── happy_carpenter_api/
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── authentication.py
+│   ├── permissions.py
+│   ├── serializers.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── views.py
+│   └── wsgi.py
+│
+├── authentication/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── serializers.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+│
+├── profiles/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── serializers.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+│
+├── posts/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── serializers.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+│
+├── likes/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── serializers.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+│
+├── follows/
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── serializers.py
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+│
+└── professionals/
+    ├── __init__.py
+    ├── admin.py
+    ├── apps.py
+    ├── models.py
+    ├── serializers.py
+    ├── tests.py
+    ├── urls.py
+    └── views.py
+```
 
 ## Features
 
@@ -56,13 +135,11 @@ This README focuses on the backend API, detailing its features, setup, and usage
     - Allows users to like and unlike posts.
     - Tracks and returns like counts for posts.
 
-![Like Functionality](documentation/like-functionality.png)
 
 - **Follow System**
     - Enables users to follow and unfollow other users.
     - Provides endpoints to manage and retrieve follower/following relationships.
 
-![Follow System](documentation/follow-system.png)
 
 - **Search and Filter**
     - Implements search functionality for posts and users.
@@ -73,7 +150,6 @@ This README focuses on the backend API, detailing its features, setup, and usage
 - **Professional Features**
     - Manages professional user-specific features like service listings and reviews.
 
-![Professional Features](documentation/professional-features.png)
 
 ### Future Features
 
