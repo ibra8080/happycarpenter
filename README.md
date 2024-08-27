@@ -230,12 +230,6 @@ It isn't a specialized tool, but with the right tags and project creation/issue 
 
 Through it, user stories, issues, and milestone tasks were planned, then tracked on a weekly basis using the basic Kanban board.
 
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑 START OF NOTES (to be deleted)
-
-Consider adding a basic screenshot of your Projects Board.
-
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-END OF NOTES (to be deleted)
-
 ![screenshot](documentation/gh-projects.png)
 
 
@@ -255,11 +249,11 @@ The development of the Happy Carpenter API followed an Agile methodology, utiliz
 
 - [Open Issues](https://github.com/ibra8080/happycarpenter/issues)
 
-![Open Issues](documentation/open-issues.png)
+![Open Issues](documentation/issues.png)
 
 - [Closed Issues](https://github.com/ibra8080/happycarpenter/issues?q=is%3Aissue+is%3Aclosed)
 
-![Closed Issues](documentation/closed-issues.png)
+![Closed Issues](documentation/issues_closed.png)
 
 ### MoSCoW Prioritization
 
@@ -269,8 +263,6 @@ The MoSCoW prioritization technique was applied to user stories:
 - **Should Have**: Important but not vital features
 - **Could Have**: Desirable features that could improve user experience
 - **Won't Have**: Acknowledged but not planned for the current iteration
-
-![MoSCoW Prioritization](documentation/moscow-prioritization.png)
 
 ## Testing
 
