@@ -28,7 +28,7 @@ class Post(models.Model):
     content = models.TextField(blank=True)
     image = CloudinaryField(
         'image',
-        folder='happy_carpenter',  
+        folder='happy_carpenter',
         blank=True,
         null=True,
         transformation={
@@ -53,7 +53,8 @@ class Post(models.Model):
 
 class Comment(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    post = models.ForeignKey(
+            Post, on_delete=models.CASCADE, related_name='comments')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     content = models.TextField()
@@ -63,4 +64,3 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.content
-

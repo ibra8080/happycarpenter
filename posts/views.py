@@ -11,12 +11,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class PostList(generics.ListCreateAPIView):
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     queryset = Post.objects.all()
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['categories', 'owner__profile__user_type', 'image_filter']
+    filterset_fields = [
+        'categories', 'owner__profile__user_type', 'image_filter']
     search_fields = ['title', 'content', 'owner__username', 'categories__name']
     ordering_fields = ['created_at', 'updated_at']
 
@@ -31,14 +33,20 @@ class PostList(generics.ListCreateAPIView):
                 with transaction.atomic():
                     post = self.perform_create(serializer)
                 headers = self.get_success_headers(serializer.data)
-                logger.info(f"Post created successfully. Data: {serializer.data}")
-                return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+                logger.info(
+                        f"Post created successfully. Data: {serializer.data}")
+                return Response(
+                        serializer.data,
+                        status=status.HTTP_201_CREATED, headers=headers)
             except Exception as e:
                 logger.error(f"Error creating post: {str(e)}")
-                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return Response(
+                    {"error": str(e)},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             logger.error(f"Serializer errors: {serializer.errors}")
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def perform_create(self, serializer):
         logger.info("Performing create")
@@ -51,6 +59,7 @@ class CategoryList(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
 
 class PostDetail(APIView):
     permission_classes = [IsOwnerOrReadOnly]
@@ -84,7 +93,9 @@ class PostDetail(APIView):
                 return Response(serializer.data)
             except Exception as e:
                 logger.error(f"Error updating post {pk}: {str(e)}")
-                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return Response(
+                        {"error": str(e)},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         logger.error(f"Error updating post {pk}: {serializer.errors}")
         return Response(
             serializer.errors, status=status.HTTP_400_BAD_REQUEST
@@ -98,8 +109,9 @@ class PostDetail(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             logger.error(f"Error deleting post {pk}: {str(e)}")
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+            return Response(
+                    {"error": str(e)},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class CommentList(generics.ListCreateAPIView):
@@ -109,6 +121,7 @@ class CommentList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
 
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsOwnerOrReadOnly]
