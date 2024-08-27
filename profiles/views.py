@@ -6,6 +6,10 @@ from .models import Profile
 from .serializers import ProfileSerializer
 from happy_carpenter_api.permissions import IsOwnerOrReadOnly
 from rest_framework.parsers import MultiPartParser, FormParser
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class ProfileList(APIView):
     """
@@ -21,13 +25,6 @@ class ProfileList(APIView):
         )
         return Response(serializer.data)
 
-import logging
-
-logger = logging.getLogger(__name__)
-
-import logging
-
-logger = logging.getLogger(__name__)
 
 class ProfileDetail(APIView):
     serializer_class = ProfileSerializer
@@ -53,15 +50,19 @@ class ProfileDetail(APIView):
             return Response(serializer.data)
         except Http404:
             logger.warning(f"Profile not found for pk: {pk}")
-            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             logger.error(f"Error in ProfileDetail get: {str(e)}")
-            return Response({"detail": "An error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                    {"detail": "An error occurred."},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def put(self, request, pk):
         profile = self.get_object(pk)
         serializer = ProfileSerializer(
-            profile, data=request.data, context={'request': request}, partial=True
+            profile, data=request.data, context={
+                'request': request}, partial=True
         )
         if serializer.is_valid():
             serializer.save()

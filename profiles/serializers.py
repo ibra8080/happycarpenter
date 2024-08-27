@@ -1,11 +1,13 @@
 from rest_framework import serializers
 from .models import Profile
 
+
 class ProfileSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
     image = serializers.ImageField(required=False, allow_null=True)
-    interests = serializers.ListField(child=serializers.CharField(), required=False)
+    interests = serializers.ListField(
+        child=serializers.CharField(), required=False)
 
     class Meta:
         model = Profile

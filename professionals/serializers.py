@@ -8,15 +8,29 @@ class AdvertisementSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Advertisement
-        fields = ['id', 'professional', 'title', 'description', 'created_at', 'updated_at']
+        fields = [
+            'id',
+            'professional',
+            'title',
+            'description',
+            'created_at',
+            'updated_at']
+
 
 class ReviewSerializer(serializers.ModelSerializer):
-    professional = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(profile__user_type='professional'))
+    professional = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.filter(profile__user_type='professional'))
     reviewer = serializers.ReadOnlyField(source='reviewer.username')
 
     class Meta:
         model = Review
-        fields = ['id', 'professional', 'reviewer', 'content', 'rating', 'created_at']
+        fields = [
+            'id',
+            'professional',
+            'reviewer',
+            'content',
+            'rating',
+            'created_at']
 
     def create(self, validated_data):
         return Review.objects.create(**validated_data)
@@ -28,4 +42,9 @@ class JobOfferSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = JobOffer
-        fields = ['id', 'professional', 'client', 'title', 'description', 'budget', 'created_at', 'status']
+        fields = [
+            'id',
+            'professional',
+            'client',
+            'title',
+            'description', 'budget', 'created_at', 'status']

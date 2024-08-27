@@ -6,22 +6,28 @@ from profiles.models import Profile
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
 
+
 class IsProfessionalUser(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.profile.user_type == 'professional'
 
+
 class AdvertisementList(generics.ListCreateAPIView):
     queryset = Advertisement.objects.all()
     serializer_class = AdvertisementSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsProfessionalUser]
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly, IsProfessionalUser]
 
     def perform_create(self, serializer):
         serializer.save(professional=self.request.user)
 
+
 class AdvertisementDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Advertisement.objects.all()
     serializer_class = AdvertisementSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsProfessionalUser]
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly, IsProfessionalUser]
+
 
 class ReviewList(generics.ListCreateAPIView):
     queryset = Review.objects.all()
@@ -35,10 +41,12 @@ class ReviewList(generics.ListCreateAPIView):
         try:
             professional = User.objects.get(id=professional_id)
             if professional.profile.user_type != 'professional':
-                raise serializers.ValidationError({"professional": "The user is not a professional."})
+                raise serializers.ValidationError(
+                        {"professional": "The user is not a professional."})
         except User.DoesNotExist:
-            raise serializers.ValidationError({"professional": "Professional not found."})
-        
+            raise serializers.ValidationError(
+                {"professional": "Professional not found."})
+
         serializer.save(reviewer=self.request.user, professional=professional)
 
     def create(self, request, *args, **kwargs):
@@ -46,15 +54,15 @@ class ReviewList(generics.ListCreateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
 
 class JobOfferList(generics.ListCreateAPIView):
     queryset = JobOffer.objects.all()
@@ -63,6 +71,7 @@ class JobOfferList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(client=self.request.user)
+
 
 class JobOfferDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = JobOffer.objects.all()

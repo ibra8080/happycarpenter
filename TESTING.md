@@ -28,14 +28,12 @@ I have used the recommended [PEP8 CI Python Linter](https://pep8ci.herokuapp.com
 | posts | models.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/posts/models.py) | ![screenshot](documentation/validation/p15.png) | |
 | posts | serializers.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/posts/serializers.py) | ![screenshot](documentation/validation/p16.png) | |
 | posts | views.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/posts/views.py) | ![screenshot](documentation/validation/p17.png) | |
-| professionals | models.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/professionals/models.py) | ![screenshot](documentation/validation/p.png) | |
-| professionals | serializers.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/professionals/serializers.py) | ![screenshot](documentation/validation/p.png) | |
-| professionals | urls.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/professionals/urls.py) | ![screenshot](documentation/validation/p.png) | |
-| professionals | views.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/professionals/views.py) | ![screenshot](documentation/validation/path-to-screenshot.png) | |
-| profiles | models.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/profiles/models.py) | ![screenshot](documentation/validation/p.png) | |
-| profiles | serializers.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/profiles/serializers.py) | ![screenshot](documentation/validation/p.png) | |
-| profiles | urls.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/profiles/urls.py) | ![screenshot](documentation/validation/p.png) | |
-| profiles | views.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/profiles/views.py) | ![screenshot](documentation/validation/p.png) | |
+| professionals | models.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/professionals/models.py) | ![screenshot](documentation/validation/p18.png) | |
+| professionals | serializers.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/professionals/serializers.py) | ![screenshot](documentation/validation/p19.png) | |
+| professionals | views.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/professionals/views.py) | ![screenshot](documentation/validation/p20.png) | |
+| profiles | models.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/profiles/models.py) | ![screenshot](documentation/validation/p21.png) | |
+| profiles | serializers.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/profiles/serializers.py) | ![screenshot](documentation/validation/p22.png) | |
+| profiles | views.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/profiles/views.py) | ![screenshot](documentation/validation/p23.png) | |
 
 ## Browser Compatibility
 
