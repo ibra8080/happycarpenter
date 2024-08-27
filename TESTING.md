@@ -35,302 +35,149 @@ I have used the recommended [PEP8 CI Python Linter](https://pep8ci.herokuapp.com
 | profiles | serializers.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/profiles/serializers.py) | ![screenshot](documentation/validation/p22.png) | |
 | profiles | views.py | [PEP8 CI](https://pep8ci.herokuapp.com/https://raw.githubusercontent.com/ibra8080/happycarpenter/main/profiles/views.py) | ![screenshot](documentation/validation/p23.png) | |
 
-## Browser Compatibility
-
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-START OF NOTES (to be deleted)
-
-Use this space to discuss testing the live/deployed site on various browsers.
-
-Consider testing AT LEAST 3 different browsers, if available on your system.
-
-You DO NOT need to use all of the browsers below, just pick any 3 (minimum).
-
-Recommended browsers to consider:
-- [Chrome](https://www.google.com/chrome)
-- [Firefox (Developer Edition)](https://www.mozilla.org/firefox/developer)
-- [Edge](https://www.microsoft.com/edge)
-- [Safari](https://support.apple.com/downloads/safari)
-- [Brave](https://brave.com/download)
-- [Opera](https://www.opera.com/download)
-
-**IMPORTANT**: You must provide screenshots of the tested browsers, to "prove" that you've actually tested them.
-
-Please note, there are services out there that can test multiple browser compatibilities at the same time.
-Some of these are paid services, but some are free.
-If you use these, you must provide a link to the source used for attribution, and multiple screenshots of the results.
-
-Sample browser testing documentation:
-
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-END OF NOTES (to be deleted)
-
-I've tested my deployed project on multiple browsers to check for compatibility issues.
-
-| Browser | Home | About | Contact | etc | Notes |
-| --- | --- | --- | --- | --- | --- |
-| Chrome | ![screenshot](documentation/browsers/browser-chrome-home.png) | ![screenshot](documentation/browsers/browser-chrome-about.png) | ![screenshot](documentation/browsers/browser-chrome-contact.png) | ![screenshot](documentation/browsers/browser-chrome-etc.png) | Works as expected |
-| Firefox | ![screenshot](documentation/browsers/browser-firefox-home.png) | ![screenshot](documentation/browsers/browser-firefox-about.png) | ![screenshot](documentation/browsers/browser-firefox-contact.png) | ![screenshot](documentation/browsers/browser-firefox-etc.png) | Works as expected |
-| Edge | ![screenshot](documentation/browsers/browser-edge-home.png) | ![screenshot](documentation/browsers/browser-edge-about.png) | ![screenshot](documentation/browsers/browser-chrome-edge.png) | ![screenshot](documentation/browsers/browser-edge-etc.png) | Works as expected |
-| Safari | ![screenshot](documentation/browsers/browser-safari-home.png) | ![screenshot](documentation/browsers/browser-safari-about.png) | ![screenshot](documentation/browsers/browser-safari-contact.png) | ![screenshot](documentation/browsers/browser-safari-etc.png) | Minor CSS differences |
-| Brave | ![screenshot](documentation/browsers/browser-brave-home.png) | ![screenshot](documentation/browsers/browser-brave-about.png) | ![screenshot](documentation/browsers/browser-brave-contact.png) | ![screenshot](documentation/browsers/browser-brave-etc.png) | Works as expected |
-| Opera | ![screenshot](documentation/browsers/browser-opera-home.png) | ![screenshot](documentation/browsers/browser-opera-about.png) | ![screenshot](documentation/browsers/browser-opera-contact.png) | ![screenshot](documentation/browsers/browser-opera-etc.png) | Minor differences |
-| repeat for any other tested browsers | x | x | x | x | x |
-
-## Responsiveness
-
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-START OF NOTES (to be deleted)
-
-Use this space to discuss testing the live/deployed site on various device sizes.
-
-The minimum requirement is for the following 3 tests:
-- Mobile
-- Tablet
-- Desktop
-
-**IMPORTANT**: You must provide screenshots of the tested responsiveness, to "prove" that you've actually tested them.
-
-Using the "amiresponsive" mockup image (or similar) does not suffice the requirements.
-Consider using some of the built-in device sizes in the Developer Tools.
-
-If you have tested the project on your actual mobile phone or tablet, consider also including screenshots of these as well.
-It showcases a higher level of manual tests, and can be seen as a positive inclusion!
-
-Sample responsiveness testing documentation:
-
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-END OF NOTES (to be deleted)
-
-I've tested my deployed project on multiple devices to check for responsiveness issues.
-
-| Device | Home | About | Contact | etc | Notes |
-| --- | --- | --- | --- | --- | --- |
-| Mobile (DevTools) | ![screenshot](documentation/responsiveness/responsive-mobile-home.png) | ![screenshot](documentation/responsiveness/responsive-mobile-about.png) | ![screenshot](documentation/responsiveness/responsive-mobile-contact.png) | ![screenshot](documentation/responsiveness/responsive-mobile-etc.png) | Works as expected |
-| Tablet (DevTools) | ![screenshot](documentation/responsiveness/responsive-tablet-home.png) | ![screenshot](documentation/responsiveness/responsive-tablet-about.png) | ![screenshot](documentation/responsiveness/responsive-tablet-contact.png) | ![screenshot](documentation/responsiveness/responsive-tablet-etc.png) | Works as expected |
-| Desktop | ![screenshot](documentation/responsiveness/responsive-desktop-home.png) | ![screenshot](documentation/responsiveness/responsive-desktop-about.png) | ![screenshot](documentation/responsiveness/responsive-desktop-contact.png) | ![screenshot](documentation/responsiveness/responsive-desktop-etc.png) | Works as expected |
-| XL Monitor | ![screenshot](documentation/responsiveness/responsive-xl-home.png) | ![screenshot](documentation/responsiveness/responsive-xl-about.png) | ![screenshot](documentation/responsiveness/responsive-xl-contact.png) | ![screenshot](documentation/responsiveness/responsive-xl-etc.png) | Scaling starts to have minor issues |
-| 4K Monitor | ![screenshot](documentation/responsiveness/responsive-4k-home.png) | ![screenshot](documentation/responsiveness/responsive-4k-about.png) | ![screenshot](documentation/responsiveness/responsive-4k-contact.png) | ![screenshot](documentation/responsiveness/responsive-4k-etc.png) | Noticeable scaling issues |
-| Google Pixel 7 Pro | ![screenshot](documentation/responsiveness/responsive-pixel-home.png) | ![screenshot](documentation/responsiveness/responsive-pixel-about.png) | ![screenshot](documentation/responsiveness/responsive-pixel-contact.png) | ![screenshot](documentation/responsiveness/responsive-pixel-etc.png) | Works as expected |
-| iPhone 14 | ![screenshot](documentation/responsiveness/responsive-iphone-home.png) | ![screenshot](documentation/responsiveness/responsive-iphone-about.png) | ![screenshot](documentation/responsiveness/responsive-iphone-contact.png) | ![screenshot](documentation/responsiveness/responsive-iphone-etc.png) | Works as expected |
-| repeat for any other tested devices | x | x | x | x | x |
-
-## Lighthouse Audit
-
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-START OF NOTES (to be deleted)
-
-Use this space to discuss testing the live/deployed site's Lighthouse Audit reports.
-Avoid testing the local version (especially if developing in Gitpod), as this can have knock-on effects of performance.
-
-If you don't have Lighthouse in your Developer Tools,
-it can be added as an [extension](https://chrome.google.com/webstore/detail/lighthouse/blipmdconlkpinefehnmjammfjpmpbjk).
-
-Don't just test the home page (unless it's a single-page application).
-Make sure to test the Lighthouse Audit results for all of your pages.
-
-**IMPORTANT**: You must provide screenshots of the results, to "prove" that you've actually tested them.
-
-Sample Lighthouse testing documentation:
-
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-END OF NOTES (to be deleted)
-
-I've tested my deployed project using the Lighthouse Audit tool to check for any major issues.
-
-| Page | Mobile | Desktop | Notes |
-| --- | --- | --- | --- |
-| Home | ![screenshot](documentation/lighthouse/lighthouse-home-mobile.png) | ![screenshot](documentation/lighthouse/lighthouse-home-desktop.png) | Some minor warnings |
-| About | ![screenshot](documentation/lighthouse/lighthouse-about-mobile.png) | ![screenshot](documentation/lighthouse/lighthouse-about-desktop.png) | Some minor warnings |
-| Gallery | ![screenshot](documentation/lighthouse/lighthouse-gallery-mobile.png) | ![screenshot](documentation/lighthouse/lighthouse-gallery-desktop.png) | Slow response time due to large images |
-| x | x | x | repeat for any other tested pages/sizes |
-
 ## Defensive Programming
 
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-START OF NOTES (to be deleted)
-
-Defensive programming (defensive design) is extremely important!
-
-When building projects that accept user inputs or forms, you should always test the level of security for each.
-Examples of this could include (not limited to):
-
-Forms:
-- Users cannot submit an empty form
-- Users must enter valid email addresses
-
-PP3 (Python-only):
-- Users must enter a valid letter/word/string when prompted
-- Users must choose from a specific list only
-
-MS3 (Flask) | MS4/PP4/PP5 (Django):
-- Users cannot brute-force a URL to navigate to a restricted page
-- Users cannot perform CRUD functionality while logged-out
-- User-A should not be able to manipulate data belonging to User-B, or vice versa
-- Non-Authenticated users should not be able to access pages that require authentication
-- Standard users should not be able to access pages intended for superusers
-
-You'll want to test all functionality on your application, whether it's a standard form,
-or uses CRUD functionality for data manipulation on a database.
-Make sure to include the `required` attribute on any form-fields that should be mandatory.
-Try to access various pages on your site as different user types (User-A, User-B, guest user, admin, superuser).
-
-You should include any manual tests performed, and the expected results/outcome.
-
-Testing should be replicable.
-Ideally, tests cases should focus on each individual section of every page on the website.
-Each test case should be specific, objective, and step-wise replicable.
-
-Instead of adding a general overview saying that everything works fine,
-consider documenting tests on each element of the page
-(ie. button clicks, input box validation, navigation links, etc.) by testing them in their happy flow,
-and also the bad/exception flow, mentioning the expected and observed results,
-and drawing a parallel between them where applicable.
-
-Consider using the following format for manual test cases:
-
-Expected Outcome / Test Performed / Result Received / Fixes Implemented
-
-- **Expected**: "Feature is expected to do X when the user does Y."
-- **Testing**: "Tested the feature by doing Y."
-- (either) **Result**: "The feature behaved as expected, and it did Y."
-- (or) **Result**: "The feature did not respond to A, B, or C."
-- **Fix**: "I did Z to the code because something was missing."
-
-Use the table below as a basic start, and expand on it using the logic above.
-
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-END OF NOTES (to be deleted)
-
 Defensive programming was manually tested with the below user acceptance testing:
+## Defensive Programming
 
-| Page | Expectation | Test | Result | Fix | Screenshot |
-| --- | --- | --- | --- | --- | --- |
-| Home | | | | | |
-| | Feature is expected to do X when the user does Y | Tested the feature by doing Y | The feature behaved as expected, and it did Y | Test concluded and passed | ![screenshot](documentation/features/feature01.png) |
-| | Feature is expected to do X when the user does Y | Tested the feature by doing Y | The feature did not respond to A, B, or C. | I did Z to the code because something was missing | ![screenshot](documentation/features/feature02.png) |
-| About | | | | | |
-| | Feature is expected to do X when the user does Y | Tested the feature by doing Y | The feature behaved as expected, and it did Y | Test concluded and passed | ![screenshot](documentation/features/feature03.png) |
-| | Feature is expected to do X when the user does Y | Tested the feature by doing Y | The feature did not respond to A, B, or C. | I did Z to the code because something was missing | ![screenshot](documentation/features/feature04.png) |
-| Gallery | | | | | |
-| | Feature is expected to do X when the user does Y | Tested the feature by doing Y | The feature behaved as expected, and it did Y | Test concluded and passed | ![screenshot](documentation/features/feature05.png) |
-| | Feature is expected to do X when the user does Y | Tested the feature by doing Y | The feature did not respond to A, B, or C. | I did Z to the code because something was missing | ![screenshot](documentation/features/feature06.png) |
-| Contact | | | | | |
-| | Feature is expected to do X when the user does Y | Tested the feature by doing Y | The feature behaved as expected, and it did Y | Test concluded and passed | ![screenshot](documentation/features/feature07.png) |
-| | Feature is expected to do X when the user does Y | Tested the feature by doing Y | The feature did not respond to A, B, or C. | I did Z to the code because something was missing | ![screenshot](documentation/features/feature08.png) |
-| repeat for all remaining pages | x | x | x | x | x |
-
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-START OF NOTES (to be deleted)
-
-Another way of performing defensive testing is a simple Pass/Fail for each test.
-The assessors prefer the above method, with the full test explained, but this is also acceptable in most cases.
-
-When in doubt, use the above method instead, and delete the table below.
-
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-END OF NOTES (to be deleted)
-
-| Page | User Action | Expected Result | Pass/Fail | Comments |
+| Endpoint | User Action | Expected Result | Pass/Fail | Comments |
 | --- | --- | --- | --- | --- |
-| Home | | | | |
-| | Click on Logo | Redirection to Home page | Pass | |
-| | Click on Home link in navbar | Redirection to Home page | Pass | |
-| Gallery | | | | |
-| | Click on Gallery link in navbar | Redirection to Gallery page | Pass | |
-| | Load gallery images | All images load as expected | Pass | |
-| Contact | | | | |
-| | Click on Contact link in navbar | Redirection to Contact page | Pass | |
-| | Enter first/last name | Field will accept freeform text | Pass | |
-| | Enter valid email address | Field will only accept email address format | Pass | |
-| | Enter message in textarea | Field will accept freeform text | Pass | |
-| | Click the Submit button | Redirects user to form-dump | Pass | User must click 'Back' button to return |
-| Sign Up | | | | |
-| | Click on Sign Up button | Redirection to Sign Up page | Pass | |
-| | Enter valid email address | Field will only accept email address format | Pass | |
-| | Enter valid password (twice) | Field will only accept password format | Pass | |
-| | Click on Sign Up button | Asks user to confirm email page | Pass | Email sent to user |
-| | Confirm email | Redirects user to blank Sign In page | Pass | |
-| Log In | | | | |
-| | Click on the Login link | Redirection to Login page | Pass | |
-| | Enter valid email address | Field will only accept email address format | Pass | |
-| | Enter valid password | Field will only accept password format | Pass | |
-| | Click Login button | Redirects user to home page | Pass | |
-| Log Out | | | | |
-| | Click Logout button | Redirects user to logout page | Pass | Confirms logout first |
-| | Click Confirm Logout button | Redirects user to home page | Pass | |
-| Profile | | | | |
-| | Click on Profile button | User will be redirected to the Profile page | Pass | |
-| | Click on the Edit button | User will be redirected to the edit profile page | Pass | |
-| | Click on the My Orders link | User will be redirected to the My Orders page | Pass | |
-| | Brute forcing the URL to get to another user's profile | User should be given an error | Pass | Redirects user back to own profile |
-| repeat for all remaining pages | x | x | x | x |
-
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-START OF NOTES (to be deleted)
-
-Repeat for all other tests, as applicable to your own site.
-The aforementioned tests are just an example of a few different project scenarios.
-
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-END OF NOTES (to be deleted)
-
-## User Story Testing
-
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-START OF NOTES (to be deleted)
-
-Testing user stories is actually quite simple, once you've already got the stories defined on your README.
-
-Most of your project's **features** should already align with the **user stories**,
-so this should as simple as creating a table with the user story, matching with the re-used screenshot
-from the respective feature.
-
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-END OF NOTES (to be deleted)
-
-| User Story | Screenshot |
-| --- | --- |
-| As a new site user, I would like to ____________, so that I can ____________. | ![screenshot](documentation/features/feature01.png) |
-| As a new site user, I would like to ____________, so that I can ____________. | ![screenshot](documentation/features/feature02.png) |
-| As a new site user, I would like to ____________, so that I can ____________. | ![screenshot](documentation/features/feature03.png) |
-| As a returning site user, I would like to ____________, so that I can ____________. | ![screenshot](documentation/features/feature04.png) |
-| As a returning site user, I would like to ____________, so that I can ____________. | ![screenshot](documentation/features/feature05.png) |
-| As a returning site user, I would like to ____________, so that I can ____________. | ![screenshot](documentation/features/feature06.png) |
-| As a site administrator, I should be able to ____________, so that I can ____________. | ![screenshot](documentation/features/feature07.png) |
-| As a site administrator, I should be able to ____________, so that I can ____________. | ![screenshot](documentation/features/feature08.png) |
-| As a site administrator, I should be able to ____________, so that I can ____________. | ![screenshot](documentation/features/feature09.png) |
-| repeat for all remaining user stories | x |
+| User Registration | | | | |
+| | Submit registration with missing required fields | API returns 400 Bad Request | Pass | Clear error message provided |
+| | Submit registration with invalid email format | API returns 400 Bad Request | Pass | Email validation error returned |
+| | Submit registration with password too short | API returns 400 Bad Request | Pass | Password length requirement enforced |
+| | Submit registration with valid data | API returns 201 Created | Pass | New user created successfully |
+| Authentication | | | | |
+| | Login with incorrect credentials | API returns 401 Unauthorized | Pass | Generic error message to prevent user enumeration |
+| | Access protected endpoint without token | API returns 401 Unauthorized | Pass | |
+| | Access protected endpoint with expired token | API returns 401 Unauthorized | Pass | Clear message about token expiration |
+| | Access protected endpoint with valid token | API allows access | Pass | |
+| Posts | | | | |
+| | Create post without authentication | API returns 401 Unauthorized | Pass | |
+| | Create post with valid data | API returns 201 Created | Pass | New post created successfully |
+| | Update another user's post | API returns 403 Forbidden | Pass | Users can only update their own posts |
+| | Delete another user's post | API returns 403 Forbidden | Pass | Users can only delete their own posts |
+| Comments | | | | |
+| | Post comment without authentication | API returns 401 Unauthorized | Pass | |
+| | Post valid comment | API returns 201 Created | Pass | Comment added successfully |
+| Likes | | | | |
+| | Like a post without authentication | API returns 401 Unauthorized | Pass | |
+| | Unlike a post | API removes like | Pass | 204 No Content on successful unlike |
+| Search and Filter | | | | |
+| | Search with SQL injection attempt | API sanitizes input | Pass | Prevents SQL injection attacks |
+| | Filter with invalid parameters | API ignores invalid params | Pass | Returns results based on valid params only |
+| Error Handling | | | | |
+| | Trigger a 500 Internal Server Error | API returns generic error message | Pass | Logs detailed error, returns safe message to client |
+| Data Validation | | | | |
+| | Submit data with incorrect types | API returns 400 Bad Request | Pass | Clear error messages about expected types |
+| | Submit data exceeding max length | API returns 400 Bad Request | Pass | Enforces max length for relevant fields |
 
 ## Bugs
 
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-START OF NOTES (to be deleted)
+- ValueError at /posts/: Must supply cloud_name in tag or in configuration
 
-This section is primarily used for JavaScript and Python applications,
-but feel free to use this section to document any HTML/CSS bugs you might run into.
+    ![screenshot](documentation/bugs/cloudinary_config_error.png)
 
-It's very important to document any bugs you've discovered while developing the project.
-Make sure to include any necessary steps you've implemented to fix the bug(s) as well.
+    - To fix this, I needed to properly configure the Cloudinary settings in my Django project. This involved:
+      1. Ensuring that the `CLOUDINARY_STORAGE` dictionary in `settings.py` included the `cloud_name` key.
+      2. Verifying that the `CLOUDINARY_URL` environment variable was correctly set with the full Cloudinary URL, including the cloud name.
+      3. Double-checking that the Cloudinary Python SDK was properly installed and up-to-date.
+      4. Restarting the Django development server after making these changes.
 
-**PRO TIP**: screenshots of bugs are extremely helpful, and go a long way!
+    After implementing these steps, the Cloudinary integration worked correctly, and I was able to handle image uploads and retrievals for posts without issues.
 
-🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑-END OF NOTES (to be deleted)
+- IntegrityError at /reviews/: null value in column "professional_id" of relation "professionals_review" violates not-null constraint
 
-- JS Uncaught ReferenceError: `foobar` is undefined/not defined
+    ![screenshot](documentation/bugs/review_integrity_error.png)
 
-    ![screenshot](documentation/bugs/bug01.png)
+    - To fix this, I needed to address the issue with the `professional_id` field in the Review model:
+      1. I checked the Review model to ensure that the `professional` field was properly defined with `on_delete=models.CASCADE` and `null=False`.
+      2. I reviewed the view handling the review creation to make sure it was correctly assigning the professional to the review before saving.
+      3. I added validation in the serializer to ensure that a valid professional_id is provided when creating a review.
+      4. I updated the frontend form to ensure it always sends a valid professional_id when submitting a review.
+      5. I added a try-except block in the view to handle potential IntegrityErrors and return a meaningful error message to the user.
 
-    - To fix this, I _____________________.
+    After implementing these changes, the review creation process worked correctly, ensuring that every review was associated with a valid professional user.
 
-- JS `'let'` or `'const'` or `'template literal syntax'` or `'arrow function syntax (=>)'` is available in ES6 (use `'esversion: 11'`) or Mozilla JS extensions (use moz).
+-  RelatedObjectDoesNotExist at /api-auth/login/: User has no profile.
 
-    ![screenshot](documentation/bugs/bug02.png)
+    ![screenshot](documentation/bugs/login_no_profile_error.png)
 
-    - To fix this, I _____________________.
+    - To fix this, I needed to address the issue of users not having associated profiles:
+      1. I reviewed the user registration process to ensure that a profile is created automatically when a new user signs up.
+      2. I added a post_save signal for the User model to create a profile if it doesn't exist:
 
-- Python `'ModuleNotFoundError'` when trying to import module from imported package
+        ```python
+        @receiver(post_save, sender=User)
+        def create_user_profile(sender, instance, created, **kwargs):
+            if created:
+                Profile.objects.create(user=instance)
+        ```
 
-    ![screenshot](documentation/bugs/bug03.png)
+      3. I ran a management command to create profiles for any existing users without them:
 
-    - To fix this, I _____________________.
+        ```python
+        from django.core.management.base import BaseCommand
+        from django.contrib.auth.models import User
+        from profiles.models import Profile
 
-- Django `TemplateDoesNotExist` at /appname/path appname/template_name.html
+        class Command(BaseCommand):
+            help = 'Creates user profiles for users without one'
 
-    ![screenshot](documentation/bugs/bug04.png)
+            def handle(self, *args, **options):
+                users_without_profile = User.objects.filter(profile__isnull=True)
+                for user in users_without_profile:
+                    Profile.objects.create(user=user)
+                    self.stdout.write(f'Created profile for user {user.username}')
+        ```
 
-    - To fix this, I _____________________.
+      4. I updated the login view to handle cases where a user might not have a profile, creating one if necessary.
 
-- Python `E501 line too long` (93 > 79 characters)
+    After implementing these changes, the login process worked correctly for all users, ensuring that every user has an associated profile.
 
-    ![screenshot](documentation/bugs/bug04.png)
+- DisallowedHost at /: Invalid HTTP_HOST header
 
-    - To fix this, I _____________________.
+    ![screenshot](documentation/bugs/disallowed_host_error.png)
+
+    - To fix this, I added the development server's hostname to the ALLOWED_HOSTS setting in settings.py:
+      ```python
+      ALLOWED_HOSTS = ['8000-ibra8080-happycarpenter-yehn5hgpju1.ws.codeinstitute-ide.net', 'localhost', '127.0.0.1']
+      ```
+    This allows Django to accept requests from the development server, resolving the DisallowedHost error.
+
+- KeyError at /profiles/: 'request'
+
+    ![screenshot](documentation/bugs/profiles_key_error.png)
+
+    - To fix this, I needed to update the `get_is_owner` method in the ProfileSerializer:
+      ```python
+      def get_is_owner(self, obj):
+          request = self.context.get('request')
+          return request.user == obj.owner if request and request.user.is_authenticated else False
+      ```
+    This ensures that the method can handle cases where the request might not be available in the serializer's context.
+
+- IntegrityError at /auth/register/: duplicate key value violates unique constraint "profiles_profile_owner_id_key"
+
+    ![screenshot](documentation/bugs/register_integrity_error.png)
+
+    - To fix this, I needed to prevent the creation of duplicate profiles:
+      1. I updated the user registration process to create a profile only if one doesn't already exist.
+      2. I added a signal to create a profile when a new user is created:
+        ```python
+        @receiver(post_save, sender=User)
+        def create_user_profile(sender, instance, created, **kwargs):
+            if created:
+                Profile.objects.get_or_create(owner=instance)
+        ```
+      3. I added a unique constraint to the Profile model to ensure each user can only have one profile:
+        ```python
+        class Profile(models.Model):
+            owner = models.OneToOneField(User, on_delete=models.CASCADE)
+            # ... other fields ...
+        ```
+    These changes ensure that each user has exactly one profile, preventing the IntegrityError during registration.
+
 
 ### GitHub **Issues**
 
