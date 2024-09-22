@@ -95,9 +95,13 @@ class RegisterSerializer(serializers.ModelSerializer):
         profile = Profile.objects.create(
             owner=user,
             name=f"{user.first_name} {user.last_name}",
-            image=profile_image if profile_image else 'default_profile_azwy8y',
             **profile_data
         )
+
+        # Handle profile image
+        if profile_image and isinstance(profile_image, InMemoryUploadedFile):
+            profile.image.save(profile_image.name, profile_image, save=True)
+        
 
         # Generate token
         refresh = RefreshToken.for_user(user)
