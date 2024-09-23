@@ -141,6 +141,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "https://3000-ibra8080-happycarpenter-qz8jupu39kt.ws.codeinstitute-ide.net",
+    "https://8080-ibra8080-happycarpenter-tf83qtt8u8t.ws.codeinstitute-ide.net",
     "http://localhost:3000",
     "https://happy-carpenter-front-26472ba73a7c.herokuapp.com",
     "https://8000-ibra8080-happycarpenter-oxrz2os0tx6.ws.codeinstitute-ide.net",
