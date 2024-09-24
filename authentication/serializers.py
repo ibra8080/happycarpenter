@@ -6,7 +6,6 @@ from profiles.models import Profile
 from rest_framework_simplejwt.tokens import RefreshToken
 from profiles.serializers import ProfileSerializer
 
-
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=True,
@@ -17,66 +16,46 @@ class RegisterSerializer(serializers.ModelSerializer):
     )
     password2 = serializers.CharField(write_only=True, required=True)
 
+    # User fields
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
+
     # Profile fields
     user_type = serializers.ChoiceField(
-        choices=Profile.USER_TYPE_CHOICES, required=True, write_only=True
+        choices=Profile.USER_TYPE_CHOICES, required=True
     )
-    years_of_experience = serializers.IntegerField(
-        required=False, allow_null=True, write_only=True
-    )
-    specialties = serializers.CharField(
-        required=False, allow_blank=True, write_only=True
-    )
-    portfolio_url = serializers.URLField(
-        required=False, allow_blank=True, write_only=True
-    )
+    years_of_experience = serializers.IntegerField(required=False, allow_null=True)
+    specialties = serializers.CharField(required=False, allow_blank=True)
+    portfolio_url = serializers.URLField(required=False, allow_blank=True)
     interests = serializers.ListField(
         child=serializers.CharField(max_length=100),
-        required=False, write_only=True
+        required=False
     )
-    address = serializers.CharField(
-        max_length=255, required=False, allow_blank=True, write_only=True
-    )
-    profile_image = serializers.ImageField(required=False, write_only=True)
+    address = serializers.CharField(max_length=255, required=False, allow_blank=True)
+    profile_image = serializers.ImageField(required=False)
 
     class Meta:
         model = User
-        fields = (
-            'username', 'email', 'password', 'password2', 'first_name',
-            'last_name', 'user_type', 'years_of_experience', 'specialties',
-            'portfolio_url', 'interests', 'address', 'profile_image'
-        )
-        extra_kwargs = {
-            'first_name': {'required': True},
-            'last_name': {'required': True}
-        }
+        fields = ('username', 'email', 'password', 'password2', 'first_name', 'last_name',
+                  'user_type', 'years_of_experience', 'specialties', 'portfolio_url',
+                  'interests', 'address', 'profile_image')
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
-            raise serializers.ValidationError(
-                {"password": "Password fields didn't match."}
-            )
+            raise serializers.ValidationError({"password": "Password fields didn't match."})
 
         if attrs['user_type'] == 'professional':
             if attrs.get('years_of_experience') is None:
-                raise serializers.ValidationError({
-                    "years_of_experience": (
-                        "This field is required for professional users."
-                    )
-                })
+                raise serializers.ValidationError({"years_of_experience": "This field is required for professional users."})
             if not attrs.get('specialties'):
-                raise serializers.ValidationError({
-                    "specialties": (
-                        "This field is required for professional users."
-                    )
-                })
+                raise serializers.ValidationError({"specialties": "This field is required for professional users."})
 
         return attrs
 
     def create(self, validated_data):
-        # Remove profile-specific data
+        # Extract profile data
         profile_data = {
-            'user_type': validated_data.pop('user_type', 'amateur'),
+            'user_type': validated_data.pop('user_type'),
             'years_of_experience': validated_data.pop('years_of_experience', None),
             'specialties': validated_data.pop('specialties', ''),
             'portfolio_url': validated_data.pop('portfolio_url', ''),
@@ -85,23 +64,31 @@ class RegisterSerializer(serializers.ModelSerializer):
         }
         profile_image = validated_data.pop('profile_image', None)
 
-        # Remove password2 field
-        validated_data.pop('password2', None)
+        # Remove password2
+        validated_data.pop('password2')
 
         # Create user
         user = User.objects.create_user(**validated_data)
 
-        # Create profile
-        profile = Profile.objects.create(
+        # Create or update profile
+        profile, created = Profile.objects.get_or_create(
             owner=user,
-            name=f"{user.first_name} {user.last_name}",
-            **profile_data
+            defaults={
+                'name': f"{user.first_name} {user.last_name}",
+                **profile_data
+            }
         )
 
+        if not created:
+            # Update existing profile
+            for key, value in profile_data.items():
+                setattr(profile, key, value)
+            profile.save()
+
         # Handle profile image
-        if profile_image and isinstance(profile_image, InMemoryUploadedFile):
-            profile.image.save(profile_image.name, profile_image, save=True)
-        
+        if profile_image:
+            profile.image = profile_image
+            profile.save()
 
         # Generate token
         refresh = RefreshToken.for_user(user)
@@ -135,4 +122,3 @@ class RegisterSerializer(serializers.ModelSerializer):
                 **user_data,
                 'profile': profile_data,
             }
-            
