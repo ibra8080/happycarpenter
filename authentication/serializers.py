@@ -32,13 +32,15 @@ class RegisterSerializer(serializers.ModelSerializer):
         required=False
     )
     address = serializers.CharField(max_length=255, required=False, allow_blank=True)
-    profile_image = serializers.ImageField(required=False)
+    content = serializers.CharField(required=False, allow_blank=True)
+    image = serializers.ImageField(required=False)
+
 
     class Meta:
         model = User
         fields = ('username', 'email', 'password', 'password2', 'first_name', 'last_name',
                   'user_type', 'years_of_experience', 'specialties', 'portfolio_url',
-                  'interests', 'address', 'profile_image')
+                  'interests', 'address', 'content', 'image')
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
@@ -55,14 +57,15 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # Extract profile data
         profile_data = {
-            'user_type': validated_data.pop('user_type'),
+            'user_type': validated_data.pop('user_type', 'amateur'),
             'years_of_experience': validated_data.pop('years_of_experience', None),
             'specialties': validated_data.pop('specialties', ''),
             'portfolio_url': validated_data.pop('portfolio_url', ''),
             'interests': validated_data.pop('interests', []),
             'address': validated_data.pop('address', ''),
+            'content': validated_data.pop('content', ''),
         }
-        profile_image = validated_data.pop('profile_image', None)
+        image = validated_data.pop('image', None)
 
         # Remove password2
         validated_data.pop('password2')
@@ -83,12 +86,11 @@ class RegisterSerializer(serializers.ModelSerializer):
             # Update existing profile
             for key, value in profile_data.items():
                 setattr(profile, key, value)
-            profile.save()
-
-        # Handle profile image
-        if profile_image:
-            profile.image = profile_image
-            profile.save()
+        
+        if image:
+            profile.image = image
+        
+        profile.save()
 
         # Generate token
         refresh = RefreshToken.for_user(user)
