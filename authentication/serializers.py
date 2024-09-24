@@ -102,6 +102,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             'access': str(refresh.access_token),
         }
 
+
     def to_representation(self, instance):
         """
         Object instance -> Dict of primitive datatypes.
