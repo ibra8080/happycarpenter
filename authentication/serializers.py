@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from profiles.models import Profile
-from rest_framework_simplejwt.tokens import RefreshToken
 from profiles.serializers import ProfileSerializer
 import logging
 
@@ -94,15 +93,7 @@ class RegisterSerializer(serializers.ModelSerializer):
                 logger.error(f"Profile not created for user {user.username}")
                 raise serializers.ValidationError("Profile creation failed")
 
-            # Generate token
-            refresh = RefreshToken.for_user(user)
-
-            return {
-                'user': user,
-                'profile': user.profile,
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            }
+            return user
         except Exception as e:
             logger.exception(f"Error in create method: {str(e)}")
             raise serializers.ValidationError(f"Error creating user: {str(e)}")
@@ -111,21 +102,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         """
         Object instance -> Dict of primitive datatypes.
         """
-        if isinstance(instance, dict):
-            # This is the case when returning from create method
-            user_data = super().to_representation(instance['user'])
-            profile_data = ProfileSerializer(instance['profile']).data
-            return {
-                **user_data,
-                'profile': profile_data,
-                'refresh': instance['refresh'],
-                'access': instance['access'],
-            }
-        else:
-            # This is the case when the instance is a User object
-            user_data = super().to_representation(instance)
-            profile_data = ProfileSerializer(instance.profile).data
-            return {
-                **user_data,
-                'profile': profile_data,
-            }
+        user_data = super().to_representation(instance)
+        profile_data = ProfileSerializer(instance.profile).data
+        return {
+            **user_data,
+            'profile': profile_data,
+        }

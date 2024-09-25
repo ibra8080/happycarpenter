@@ -15,19 +15,10 @@ class CustomRegisterView(RegisterView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             try:
-                user_data = serializer.save()
-                logger.info(f"User created successfully: {user_data['user'].username}")
-                return Response({
-                    "user": {
-                        "username": user_data['user'].username,
-                        "email": user_data['user'].email,
-                        "first_name": user_data['user'].first_name,
-                        "last_name": user_data['user'].last_name,
-                    },
-                    "profile": ProfileSerializer(user_data['profile']).data,
-                    "refresh": user_data['refresh'],
-                    "access": user_data['access']
-                }, status=status.HTTP_201_CREATED)
+                user = self.perform_create(serializer)
+                headers = self.get_success_headers(serializer.data)
+                data = self.get_response_data(user)
+                return Response(data, status=status.HTTP_201_CREATED, headers=headers)
             except Exception as e:
                 logger.exception(f"Detailed error creating user: {str(e)}")
                 return Response({
@@ -36,3 +27,18 @@ class CustomRegisterView(RegisterView):
         else:
             logger.warning(f"Invalid registration data: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def perform_create(self, serializer):
+        user = serializer.save()
+        return user
+
+    def get_response_data(self, user):
+        return {
+            "user": {
+                "username": user.username,
+                "email": user.email,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+            },
+            "profile": ProfileSerializer(user.profile).data,
+        }
