@@ -1,6 +1,10 @@
 import logging
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from dj_rest_auth.registration.views import RegisterView
 from .serializers import RegisterSerializer
+from profiles.serializers import ProfileSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -9,13 +13,6 @@ class CustomRegisterView(RegisterView):
 
     def create(self, request, *args, **kwargs):
         logger.info(f"Received registration data: {request.data}")
-        return super().create(request, *args, **kwargs)
-
-class RegisterView(generics.CreateAPIView):
-    serializer_class = RegisterSerializer
-    permission_classes = (AllowAny,)
-
-    def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             try:
