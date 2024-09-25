@@ -57,8 +57,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        logger.info(f"Attempting to create user with data: {validated_data}")
-        
+        # Extract profile data
         profile_data = {
             'user_type': validated_data.pop('user_type', 'amateur'),
             'years_of_experience': validated_data.pop('years_of_experience', None),
@@ -70,35 +69,26 @@ class RegisterSerializer(serializers.ModelSerializer):
         }
         image = validated_data.pop('image', None)
 
-        password = validated_data.pop('password1')
-        validated_data.pop('password2', None)
+        # Remove password2
+        validated_data.pop('password2')
 
-        user = User.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            password=password,
-            first_name=validated_data.get('first_name', ''),
-            last_name=validated_data.get('last_name', '')
-        )
+        # Create user
+        user = User.objects.create_user(**validated_data)
 
-        profile, created = Profile.objects.update_or_create(
-            owner=user,
-            defaults={
-                'name': f"{user.first_name} {user.last_name}",
-                **profile_data
-            }
-        )
+        # Update the profile that was created by the signal
+        if hasattr(user, 'profile'):
+            for key, value in profile_data.items():
+                setattr(user.profile, key, value)
+            if image:
+                user.profile.image = image
+            user.profile.save()
 
-        if image:
-            profile.image = image
-            profile.save()
-
-        logger.info(f"User created successfully: {user.username}, Profile: {profile}")
-
+        # Generate token
         refresh = RefreshToken.for_user(user)
+
         return {
             'user': user,
-            'profile': profile,
+            'profile': user.profile,
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
