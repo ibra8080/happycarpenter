@@ -5,6 +5,9 @@ from django.contrib.auth.password_validation import validate_password
 from profiles.models import Profile
 from rest_framework_simplejwt.tokens import RefreshToken
 from profiles.serializers import ProfileSerializer
+import logging
+
+logger = logging.getLogger(__name__)
 
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
@@ -54,7 +57,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        # Extract profile data
+        logger.info(f"Attempting to create user with data: {validated_data}")
+        
         profile_data = {
             'user_type': validated_data.pop('user_type', 'amateur'),
             'years_of_experience': validated_data.pop('years_of_experience', None),
@@ -66,15 +70,18 @@ class RegisterSerializer(serializers.ModelSerializer):
         }
         image = validated_data.pop('image', None)
 
-        # Remove password2 and set password
-        validated_data.pop('password2')
         password = validated_data.pop('password1')
+        validated_data.pop('password2', None)
 
-        # Create user
-        user = User.objects.create_user(password=password, **validated_data)
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=password,
+            first_name=validated_data.get('first_name', ''),
+            last_name=validated_data.get('last_name', '')
+        )
 
-        # Create or update profile
-        profile, created = Profile.objects.get_or_create(
+        profile, created = Profile.objects.update_or_create(
             owner=user,
             defaults={
                 'name': f"{user.first_name} {user.last_name}",
@@ -82,19 +89,13 @@ class RegisterSerializer(serializers.ModelSerializer):
             }
         )
 
-        if not created:
-            # Update existing profile
-            for key, value in profile_data.items():
-                setattr(profile, key, value)
-        
         if image:
             profile.image = image
-        
-        profile.save()
+            profile.save()
 
-        # Generate token
+        logger.info(f"User created successfully: {user.username}, Profile: {profile}")
+
         refresh = RefreshToken.for_user(user)
-
         return {
             'user': user,
             'profile': profile,
