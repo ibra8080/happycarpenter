@@ -1,6 +1,15 @@
 import logging
+from dj_rest_auth.registration.views import RegisterView
+from .serializers import RegisterSerializer
+
 logger = logging.getLogger(__name__)
 
+class CustomRegisterView(RegisterView):
+    serializer_class = RegisterSerializer
+
+    def create(self, request, *args, **kwargs):
+        logger.info(f"Received registration data: {request.data}")
+        return super().create(request, *args, **kwargs)
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
@@ -31,4 +40,3 @@ class RegisterView(generics.CreateAPIView):
         else:
             logger.warning(f"Invalid registration data: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            
