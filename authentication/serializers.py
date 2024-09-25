@@ -11,7 +11,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all())]
     )
-    password = serializers.CharField(
+    password1 = serializers.CharField(
         write_only=True, required=True, validators=[validate_password]
     )
     password2 = serializers.CharField(write_only=True, required=True)
@@ -35,15 +35,14 @@ class RegisterSerializer(serializers.ModelSerializer):
     content = serializers.CharField(required=False, allow_blank=True)
     image = serializers.ImageField(required=False)
 
-
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'password2', 'first_name', 'last_name',
+        fields = ('username', 'email', 'password1', 'password2', 'first_name', 'last_name',
                   'user_type', 'years_of_experience', 'specialties', 'portfolio_url',
                   'interests', 'address', 'content', 'image')
 
     def validate(self, attrs):
-        if attrs['password'] != attrs['password2']:
+        if attrs['password1'] != attrs['password2']:
             raise serializers.ValidationError({"password": "Password fields didn't match."})
 
         if attrs['user_type'] == 'professional':
@@ -67,11 +66,12 @@ class RegisterSerializer(serializers.ModelSerializer):
         }
         image = validated_data.pop('image', None)
 
-        # Remove password2
+        # Remove password2 and set password
         validated_data.pop('password2')
+        password = validated_data.pop('password1')
 
         # Create user
-        user = User.objects.create_user(**validated_data)
+        user = User.objects.create_user(password=password, **validated_data)
 
         # Create or update profile
         profile, created = Profile.objects.get_or_create(
@@ -101,7 +101,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
-
 
     def to_representation(self, instance):
         """
