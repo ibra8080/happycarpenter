@@ -70,11 +70,18 @@ class RegisterSerializer(serializers.ModelSerializer):
             }
             image = validated_data.pop('image', None)
 
-            # Remove password2
-            validated_data.pop('password2')
+            # Handle password
+            password = validated_data.pop('password1')
+            validated_data.pop('password2', None)  # Remove password2 if it exists
 
             # Create user
-            user = User.objects.create_user(**validated_data)
+            user = User.objects.create_user(
+                username=validated_data['username'],
+                email=validated_data['email'],
+                password=password,
+                first_name=validated_data.get('first_name', ''),
+                last_name=validated_data.get('last_name', '')
+            )
 
             # Update the profile that was created by the signal
             if hasattr(user, 'profile'):
