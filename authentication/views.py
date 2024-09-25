@@ -1,7 +1,6 @@
 import logging
-from rest_framework import generics, status
+from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
 from dj_rest_auth.registration.views import RegisterView
 from .serializers import RegisterSerializer
 from profiles.serializers import ProfileSerializer
@@ -30,9 +29,9 @@ class CustomRegisterView(RegisterView):
                     "access": user_data['access']
                 }, status=status.HTTP_201_CREATED)
             except Exception as e:
-                logger.error(f"Error creating user: {str(e)}")
+                logger.exception(f"Detailed error creating user: {str(e)}")
                 return Response({
-                    "error": "An error occurred while creating the user."
+                    "error": f"An error occurred while creating the user: {str(e)}"
                 }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             logger.warning(f"Invalid registration data: {serializer.errors}")

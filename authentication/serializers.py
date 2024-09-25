@@ -57,41 +57,48 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        # Extract profile data
-        profile_data = {
-            'user_type': validated_data.pop('user_type', 'amateur'),
-            'years_of_experience': validated_data.pop('years_of_experience', None),
-            'specialties': validated_data.pop('specialties', ''),
-            'portfolio_url': validated_data.pop('portfolio_url', ''),
-            'interests': validated_data.pop('interests', []),
-            'address': validated_data.pop('address', ''),
-            'content': validated_data.pop('content', ''),
-        }
-        image = validated_data.pop('image', None)
+        try:
+            # Extract profile data
+            profile_data = {
+                'user_type': validated_data.pop('user_type', 'amateur'),
+                'years_of_experience': validated_data.pop('years_of_experience', None),
+                'specialties': validated_data.pop('specialties', ''),
+                'portfolio_url': validated_data.pop('portfolio_url', ''),
+                'interests': validated_data.pop('interests', []),
+                'address': validated_data.pop('address', ''),
+                'content': validated_data.pop('content', ''),
+            }
+            image = validated_data.pop('image', None)
 
-        # Remove password2
-        validated_data.pop('password2')
+            # Remove password2
+            validated_data.pop('password2')
 
-        # Create user
-        user = User.objects.create_user(**validated_data)
+            # Create user
+            user = User.objects.create_user(**validated_data)
 
-        # Update the profile that was created by the signal
-        if hasattr(user, 'profile'):
-            for key, value in profile_data.items():
-                setattr(user.profile, key, value)
-            if image:
-                user.profile.image = image
-            user.profile.save()
+            # Update the profile that was created by the signal
+            if hasattr(user, 'profile'):
+                for key, value in profile_data.items():
+                    setattr(user.profile, key, value)
+                if image:
+                    user.profile.image = image
+                user.profile.save()
+            else:
+                logger.error(f"Profile not created for user {user.username}")
+                raise serializers.ValidationError("Profile creation failed")
 
-        # Generate token
-        refresh = RefreshToken.for_user(user)
+            # Generate token
+            refresh = RefreshToken.for_user(user)
 
-        return {
-            'user': user,
-            'profile': user.profile,
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        }
+            return {
+                'user': user,
+                'profile': user.profile,
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            }
+        except Exception as e:
+            logger.exception(f"Error in create method: {str(e)}")
+            raise serializers.ValidationError(f"Error creating user: {str(e)}")
 
     def to_representation(self, instance):
         """
