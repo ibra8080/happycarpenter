@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import Profile
 
-
 class ProfileSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
@@ -30,13 +29,19 @@ class ProfileSerializer(serializers.ModelSerializer):
         ret['image'] = self.get_image_url(instance)
         return ret
 
-    def update(self, instance, validated_data):
-        interests = validated_data.pop('interests', None)
-        if interests is not None:
-            instance.interests = interests
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['years_of_experience', 'specialties', 'portfolio_url', 'interests', 'address', 'content', 'image']
 
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
+    def validate(self, attrs):
+        instance = getattr(self, 'instance', None)
+        user_type = instance.user_type if instance else attrs.get('user_type')
 
-        instance.save()
-        return instance
+        if user_type == 'professional':
+            if attrs.get('years_of_experience') is None:
+                raise serializers.ValidationError({"years_of_experience": "This field is required for professional users."})
+            if not attrs.get('specialties'):
+                raise serializers.ValidationError({"specialties": "This field is required for professional users."})
+
+        return attrs

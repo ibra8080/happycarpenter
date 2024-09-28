@@ -1,21 +1,16 @@
 from django.http import Http404
-from rest_framework import status, permissions
+from rest_framework import status, permissions, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Profile
-from .serializers import ProfileSerializer
+from .serializers import ProfileSerializer, ProfileUpdateSerializer
 from happy_carpenter_api.permissions import IsOwnerOrReadOnly
 from rest_framework.parsers import MultiPartParser, FormParser
 import logging
 
 logger = logging.getLogger(__name__)
 
-
 class ProfileList(APIView):
-    """
-    List all profiles
-    No Create view (post method), as profile creation handled by django signals
-    """
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get(self, request):
@@ -24,7 +19,6 @@ class ProfileList(APIView):
             profiles, many=True, context={'request': request}
         )
         return Response(serializer.data)
-
 
 class ProfileDetail(APIView):
     serializer_class = ProfileSerializer
@@ -79,3 +73,23 @@ class ProfileDetail(APIView):
         profile.delete()
         logger.info(f"Profile deleted successfully for pk: {pk}")
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class ProfileUpdateView(generics.UpdateAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileUpdateSerializer
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
+
+    def get_object(self):
+        return self.request.user.profile
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
