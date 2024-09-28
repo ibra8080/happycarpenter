@@ -1,36 +1,21 @@
-from rest_framework import generics, status
-from rest_framework.permissions import AllowAny
+from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from .serializers import RegisterSerializer
-import logging
-
-logger = logging.getLogger(__name__)
+from django.contrib.auth.models import User
 
 class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    permission_classes = (permissions.AllowAny,)
     serializer_class = RegisterSerializer
-    permission_classes = (AllowAny,)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            try:
-                user_data = serializer.save()
-                logger.info(f"User created successfully: {user_data['user'].username}")
-                return Response({
-                    "user": {
-                        "username": user_data['user'].username,
-                        "email": user_data['user'].email,
-                        "first_name": user_data['user'].first_name,
-                        "last_name": user_data['user'].last_name,
-                    },
-                    "refresh": user_data['refresh'],
-                    "access": user_data['access']
-                }, status=status.HTTP_201_CREATED)
-            except Exception as e:
-                logger.error(f"Error creating user: {str(e)}")
-                return Response({
-                    "error": "An error occurred while creating the user."
-                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            logger.warning(f"Invalid registration data: {serializer.errors}")
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response({
+            "user": {
+                "username": user.username,
+                "email": user.email
+            },
+            "message": "User created successfully",
+        }, status=status.HTTP_201_CREATED)
