@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from profiles.models import Profile
+from rest_framework_simplejwt.tokens import RefreshToken
 from profiles.serializers import ProfileSerializer
 import logging
 
@@ -13,7 +14,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all())]
     )
-    password1 = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    password1 = serializers.CharField(
+        write_only=True, required=True, validators=[validate_password]
+    )
     password2 = serializers.CharField(write_only=True, required=True)
 
     # User fields
@@ -21,14 +24,19 @@ class RegisterSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(required=True)
 
     # Profile fields
-    user_type = serializers.ChoiceField(choices=Profile.USER_TYPE_CHOICES, required=False)
+    user_type = serializers.ChoiceField(
+        choices=Profile.USER_TYPE_CHOICES, required=True
+    )
     years_of_experience = serializers.IntegerField(required=False, allow_null=True)
     specialties = serializers.CharField(required=False, allow_blank=True)
     portfolio_url = serializers.URLField(required=False, allow_blank=True)
-    interests = serializers.ListField(child=serializers.CharField(max_length=100), required=False)
+    interests = serializers.ListField(
+        child=serializers.CharField(max_length=100),
+        required=False
+    )
     address = serializers.CharField(max_length=255, required=False, allow_blank=True)
     content = serializers.CharField(required=False, allow_blank=True)
-    image = serializers.ImageField(required=False, allow_null=True)
+    image = serializers.ImageField(required=False)
 
     class Meta:
         model = User
@@ -40,7 +48,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         if attrs['password1'] != attrs['password2']:
             raise serializers.ValidationError({"password": "Password fields didn't match."})
 
-        if attrs.get('user_type') == 'professional':
+        if attrs['user_type'] == 'professional':
             if attrs.get('years_of_experience') is None:
                 raise serializers.ValidationError({"years_of_experience": "This field is required for professional users."})
             if not attrs.get('specialties'):
@@ -49,45 +57,61 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        try:
-            password = validated_data.pop('password1')
-            validated_data.pop('password2', None)
+        # Extract profile data
+        profile_data = {
+            'user_type': validated_data.pop('user_type', 'amateur'),
+            'years_of_experience': validated_data.pop('years_of_experience', None),
+            'specialties': validated_data.pop('specialties', ''),
+            'portfolio_url': validated_data.pop('portfolio_url', ''),
+            'interests': validated_data.pop('interests', []),
+            'address': validated_data.pop('address', ''),
+            'content': validated_data.pop('content', ''),
+        }
+        image = validated_data.pop('image', None)
 
-            # Extract profile data
-            profile_data = {
-                'user_type': validated_data.pop('user_type', 'amateur'),
-                'years_of_experience': validated_data.pop('years_of_experience', None),
-                'specialties': validated_data.pop('specialties', ''),
-                'portfolio_url': validated_data.pop('portfolio_url', ''),
-                'interests': validated_data.pop('interests', []),
-                'address': validated_data.pop('address', ''),
-                'content': validated_data.pop('content', ''),
-                'image': validated_data.pop('image', None),
-            }
+        # Remove password2
+        validated_data.pop('password2')
 
-            user = User.objects.create_user(
-                username=validated_data['username'],
-                email=validated_data['email'],
-                password=password,
-                first_name=validated_data.get('first_name', ''),
-                last_name=validated_data.get('last_name', '')
-            )
+        # Create user
+        user = User.objects.create_user(**validated_data)
 
-            # Create or update profile
-            Profile.objects.update_or_create(owner=user, defaults=profile_data)
+        # Update the profile that was created by the signal
+        if hasattr(user, 'profile'):
+            for key, value in profile_data.items():
+                setattr(user.profile, key, value)
+            if image:
+                user.profile.image = image
+            user.profile.save()
 
-            return user
-        except Exception as e:
-            logger.exception(f"Error in create method: {str(e)}")
-            raise serializers.ValidationError(f"Error creating user: {str(e)}")
+        # Generate token
+        refresh = RefreshToken.for_user(user)
+
+        return {
+            'user': user,
+            'profile': user.profile,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
 
     def to_representation(self, instance):
         """
         Object instance -> Dict of primitive datatypes.
         """
-        user_data = super().to_representation(instance)
-        profile_data = ProfileSerializer(instance.profile).data
-        return {
-            **user_data,
-            'profile': profile_data,
-        }
+        if isinstance(instance, dict):
+            # This is the case when returning from create method
+            user_data = super().to_representation(instance['user'])
+            profile_data = ProfileSerializer(instance['profile']).data
+            return {
+                **user_data,
+                'profile': profile_data,
+                'refresh': instance['refresh'],
+                'access': instance['access'],
+            }
+        else:
+            # This is the case when the instance is a User object
+            user_data = super().to_representation(instance)
+            profile_data = ProfileSerializer(instance.profile).data
+            return {
+                **user_data,
+                'profile': profile_data,
+            }
