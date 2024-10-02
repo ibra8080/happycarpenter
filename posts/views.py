@@ -9,6 +9,7 @@ from .serializers import PostSerializer, CommentSerializer, CategorySerializer
 from happy_carpenter_api.permissions import IsOwnerOrReadOnly
 import logging
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -117,10 +118,14 @@ class PostDetail(APIView):
 class CommentList(generics.ListCreateAPIView):
     serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    queryset = Comment.objects.all()
+
+    def get_queryset(self):
+        post_id = self.request.query_params.get('post')
+        return Comment.objects.filter(post__id=post_id) if post_id else Comment.objects.all()
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
 
 
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
