@@ -46,6 +46,8 @@ class PostSerializer(serializers.ModelSerializer):
     profile_image = serializers.ReadOnlyField(source='owner.profile.image.url')
     image = serializers.ImageField(required=False)
     likes_count = serializers.SerializerMethodField()
+    comments_count = serializers.SerializerMethodField()
+
 
     def get_image(self, obj):
         if obj.image:
@@ -73,6 +75,9 @@ class PostSerializer(serializers.ModelSerializer):
     def get_likes_count(self, obj):  
         return obj.likes.count()
 
+    def get_comments_count(self, obj):  
+        return obj.comments.count()
+
     comments = CommentSerializer(many=True, read_only=True)
     categories = CategorySerializer(many=True, required=False)
 
@@ -81,7 +86,7 @@ class PostSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'owner', 'is_owner', 'profile_id', 'profile_image',
             'created_at', 'updated_at', 'title', 'content', 'image',
-            'image_filter', 'comments', 'categories', 'likes_count'
+            'image_filter', 'comments', 'categories', 'likes_count', 'comments_count'
         ]
 
     def create(self, validated_data):
