@@ -16,12 +16,13 @@ logger = logging.getLogger(__name__)
 class PostList(generics.ListCreateAPIView):
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    queryset = Post.objects.all()
+    queryset = Post.objects.all().order_by('-created_at')
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = [
         'categories', 'owner__profile__user_type', 'image_filter']
     search_fields = ['title', 'content', 'owner__username', 'categories__name']
     ordering_fields = ['created_at', 'updated_at']
+    ordering = '-created_at'
 
     def create(self, request, *args, **kwargs):
         logger.info(f"Received POST request. Data: {request.data}")
