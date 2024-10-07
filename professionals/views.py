@@ -5,7 +5,13 @@ from .serializers import AdvertisementSerializer, ReviewSerializer, JobOfferSeri
 from profiles.models import Profile
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
+import logging
 
+logger = logging.getLogger(__name__)
+
+class IsProfessionalUser(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.profile.user_type == 'professional'
 
 class IsProfessionalOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -21,13 +27,26 @@ class AdvertisementList(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(professional=self.request.user)
 
+    def list(self, request, *args, **kwargs):
+        logger.info(f"Listing advertisements. User: {request.user}")
+        try:
+            return super().list(request, *args, **kwargs)
+        except Exception as e:
+            logger.error(f"Error listing advertisements: {str(e)}")
+            raise
+
+    def create(self, request, *args, **kwargs):
+        logger.info(f"Creating advertisement. User: {request.user}")
+        try:
+            return super().create(request, *args, **kwargs)
+        except Exception as e:
+            logger.error(f"Error creating advertisement: {str(e)}")
+            raise
 
 class AdvertisementDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Advertisement.objects.all()
     serializer_class = AdvertisementSerializer
-    permission_classes = [
-        permissions.IsAuthenticatedOrReadOnly, IsProfessionalUser]
-
+    permission_classes = [IsProfessionalOrReadOnly]
 
 class ReviewList(generics.ListCreateAPIView):
     queryset = Review.objects.all()
@@ -57,12 +76,10 @@ class ReviewList(generics.ListCreateAPIView):
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
 
 class JobOfferList(generics.ListCreateAPIView):
     queryset = JobOffer.objects.all()
@@ -71,7 +88,6 @@ class JobOfferList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(client=self.request.user)
-
 
 class JobOfferDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = JobOffer.objects.all()
