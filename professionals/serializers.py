@@ -2,17 +2,18 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import Advertisement, Review, JobOffer
 
-
 class AdvertisementSerializer(serializers.ModelSerializer):
     professional = serializers.ReadOnlyField(source='professional.username')
 
     class Meta:
         model = Advertisement
         fields = [
-            'id',
-            'professional',
-            'title',
-            'description',
+            'id', 
+            'professional', 
+            'title', 
+            'description', 
+            'image', 
+            'place', 
             'created_at',
             'updated_at']
 
