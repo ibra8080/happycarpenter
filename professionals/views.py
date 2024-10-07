@@ -6,34 +6,55 @@ from profiles.models import Profile
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
 import logging
+import traceback
 
 logger = logging.getLogger(__name__)
 
 class IsProfessionalUser(permissions.BasePermission):
     def has_permission(self, request, view):
-        return request.user.is_authenticated and request.user.profile.user_type == 'professional'
+        logger.info(f"Checking IsProfessionalUser for user: {request.user}")
+        is_professional = request.user.is_authenticated and request.user.profile.user_type == 'professional'
+        logger.info(f"User is professional: {is_professional}")
+        return is_professional
 
 class IsProfessionalOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
+        logger.info(f"Checking IsProfessionalOrReadOnly for user: {request.user}, method: {request.method}")
         if request.method in permissions.SAFE_METHODS:
+            logger.info("Safe method, granting permission")
             return True
-        return request.user.is_authenticated and request.user.profile.user_type == 'professional'
+        is_professional = request.user.is_authenticated and request.user.profile.user_type == 'professional'
+        logger.info(f"User is professional: {is_professional}")
+        return is_professional
 
 class AdvertisementList(generics.ListCreateAPIView):
     queryset = Advertisement.objects.all()
     serializer_class = AdvertisementSerializer
     permission_classes = [IsProfessionalOrReadOnly]
 
-    def perform_create(self, serializer):
-        serializer.save(professional=self.request.user)
-
     def list(self, request, *args, **kwargs):
         logger.info(f"Listing advertisements. User: {request.user}")
         try:
-            return super().list(request, *args, **kwargs)
+            logger.info("Fetching queryset")
+            queryset = self.filter_queryset(self.get_queryset())
+            logger.info(f"Queryset count: {queryset.count()}")
+
+            logger.info("Paginating queryset")
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                logger.info("Serializing paginated data")
+                serializer = self.get_serializer(page, many=True)
+                logger.info("Returning paginated response")
+                return self.get_paginated_response(serializer.data)
+
+            logger.info("Serializing full queryset")
+            serializer = self.get_serializer(queryset, many=True)
+            logger.info("Returning full response")
+            return Response(serializer.data)
         except Exception as e:
             logger.error(f"Error listing advertisements: {str(e)}")
-            raise
+            logger.error(traceback.format_exc())
+            return Response({"detail": "An error occurred while fetching advertisements."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def create(self, request, *args, **kwargs):
         logger.info(f"Creating advertisement. User: {request.user}")
@@ -41,7 +62,12 @@ class AdvertisementList(generics.ListCreateAPIView):
             return super().create(request, *args, **kwargs)
         except Exception as e:
             logger.error(f"Error creating advertisement: {str(e)}")
-            raise
+            logger.error(traceback.format_exc())
+            return Response({"detail": "An error occurred while creating the advertisement."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def perform_create(self, serializer):
+        logger.info(f"Performing create for user: {self.request.user}")
+        serializer.save(professional=self.request.user)
 
 class AdvertisementDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Advertisement.objects.all()
