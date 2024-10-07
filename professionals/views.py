@@ -7,16 +7,16 @@ from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
 
 
-class IsProfessionalUser(permissions.BasePermission):
+class IsProfessionalOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
         return request.user.is_authenticated and request.user.profile.user_type == 'professional'
-
 
 class AdvertisementList(generics.ListCreateAPIView):
     queryset = Advertisement.objects.all()
     serializer_class = AdvertisementSerializer
-    permission_classes = [
-        permissions.IsAuthenticatedOrReadOnly, IsProfessionalUser]
+    permission_classes = [IsProfessionalOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(professional=self.request.user)
