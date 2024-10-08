@@ -147,6 +147,7 @@ class JobOfferList(generics.ListCreateAPIView):
             logger.error(f"Error creating job offer: {str(e)}")
             logger.error(traceback.format_exc())
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            
 
 class JobOfferDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = JobOffer.objects.all()
