@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import Advertisement, Review, JobOffer
 
 class AdvertisementSerializer(serializers.ModelSerializer):
-    professional = serializers.ReadOnlyField(source='professional.username')
+    professional = serializers.SerializerMethodField()
 
     class Meta:
         model = Advertisement
@@ -15,7 +15,15 @@ class AdvertisementSerializer(serializers.ModelSerializer):
             'image', 
             'place', 
             'created_at',
-            'updated_at']
+            'updated_at'
+        ]
+
+    def get_professional(self, obj):
+        return {
+            'id': obj.professional.id,
+            'username': obj.professional.username
+        }
+
 
 
 class ReviewSerializer(serializers.ModelSerializer):
