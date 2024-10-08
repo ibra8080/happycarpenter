@@ -32,11 +32,44 @@ class AdvertisementList(generics.ListCreateAPIView):
     serializer_class = AdvertisementSerializer
     permission_classes = [IsProfessionalOrReadOnly]
 
-    def perform_create(self, serializer):
-        if self.request.user.profile.user_type != 'professional':
-            raise serializers.ValidationError("Only professional users can create advertisements.")
-        serializer.save(professional=self.request.user)
+    def list(self, request, *args, **kwargs):
+        logger.info(f"Listing advertisements. User: {request.user}")
+        try:
+            logger.info("Fetching queryset")
+            queryset = self.filter_queryset(self.get_queryset())
+            logger.info(f"Queryset count: {queryset.count()}")
 
+            logger.info("Paginating queryset")
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                logger.info("Serializing paginated data")
+                serializer = self.get_serializer(page, many=True)
+                logger.info("Returning paginated response")
+                return self.get_paginated_response(serializer.data)
+
+            logger.info("Serializing full queryset")
+            serializer = self.get_serializer(queryset, many=True)
+            logger.info("Returning full response")
+            return Response(serializer.data)
+        except Exception as e:
+            logger.error(f"Error listing advertisements: {str(e)}")
+            logger.error(traceback.format_exc())
+            return Response({"detail": "An error occurred while fetching advertisements."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def create(self, request, *args, **kwargs):
+        logger.info(f"Creating advertisement. User: {request.user}")
+        if request.user.profile.user_type != 'professional':
+            return Response({"detail": "Only professional users can create advertisements."}, status=status.HTTP_403_FORBIDDEN)
+        try:
+            return super().create(request, *args, **kwargs)
+        except Exception as e:
+            logger.error(f"Error creating advertisement: {str(e)}")
+            logger.error(traceback.format_exc())
+            return Response({"detail": "An error occurred while creating the advertisement."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def perform_create(self, serializer):
+        logger.info(f"Performing create for user: {self.request.user}")
+        serializer.save(professional=self.request.user)
 
 class AdvertisementDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Advertisement.objects.all()
@@ -88,8 +121,12 @@ class JobOfferList(generics.ListCreateAPIView):
         try:
             professional = User.objects.get(id=professional_id)
             advertisement = Advertisement.objects.get(id=advertisement_id)
-        except (User.DoesNotExist, Advertisement.DoesNotExist):
-            raise serializers.ValidationError("Invalid professional or advertisement ID")
+            if professional.profile.user_type != 'professional':
+                raise serializers.ValidationError("The selected user is not a professional.")
+        except User.DoesNotExist:
+            raise serializers.ValidationError("Invalid professional ID")
+        except Advertisement.DoesNotExist:
+            raise serializers.ValidationError("Invalid advertisement ID")
 
         serializer.save(
             client=self.request.user,
@@ -98,11 +135,18 @@ class JobOfferList(generics.ListCreateAPIView):
         )
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        logger.info(f"Creating job offer. User: {request.user}")
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            logger.info(f"Job offer created successfully. Data: {serializer.data}")
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        except Exception as e:
+            logger.error(f"Error creating job offer: {str(e)}")
+            logger.error(traceback.format_exc())
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class JobOfferDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = JobOffer.objects.all()
