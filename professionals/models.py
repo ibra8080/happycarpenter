@@ -20,7 +20,6 @@ class Advertisement(models.Model):
         ordering = ['-created_at']
 
 
-
 class Review(models.Model):
     professional = models.ForeignKey(
             User, on_delete=models.CASCADE, related_name='reviews_received')
@@ -46,6 +45,8 @@ class JobOffer(models.Model):
         User, on_delete=models.CASCADE, related_name='job_offers')
     client = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='job_offers_made')
+    advertisement = models.ForeignKey(
+        Advertisement, on_delete=models.CASCADE, related_name='job_offers', null=True, blank=True)
     title = models.CharField(max_length=200)
     description = models.TextField()
     budget = models.DecimalField(
