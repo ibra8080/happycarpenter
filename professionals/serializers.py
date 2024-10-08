@@ -68,3 +68,7 @@ class JobOfferSerializer(serializers.ModelSerializer):
         if not value.profile.user_type == 'professional':
             raise serializers.ValidationError("The selected user is not a professional.")
         return value
+
+    def create(self, validated_data):
+        client = self.context['request'].user
+        return JobOffer.objects.create(client=client, **validated_data)
