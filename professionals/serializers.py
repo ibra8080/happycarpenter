@@ -44,6 +44,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Review.objects.create(**validated_data)
 
+
 class JobOfferSerializer(serializers.ModelSerializer):
     professional = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.filter(profile__user_type='professional'))
