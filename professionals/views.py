@@ -136,6 +136,7 @@ class JobOfferList(generics.ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
+
 class JobOfferDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = JobOffer.objects.all()
     serializer_class = JobOfferSerializer
