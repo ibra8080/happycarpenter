@@ -32,42 +32,11 @@ class AdvertisementList(generics.ListCreateAPIView):
     serializer_class = AdvertisementSerializer
     permission_classes = [IsProfessionalOrReadOnly]
 
-    def list(self, request, *args, **kwargs):
-        logger.info(f"Listing advertisements. User: {request.user}")
-        try:
-            logger.info("Fetching queryset")
-            queryset = self.filter_queryset(self.get_queryset())
-            logger.info(f"Queryset count: {queryset.count()}")
-
-            logger.info("Paginating queryset")
-            page = self.paginate_queryset(queryset)
-            if page is not None:
-                logger.info("Serializing paginated data")
-                serializer = self.get_serializer(page, many=True)
-                logger.info("Returning paginated response")
-                return self.get_paginated_response(serializer.data)
-
-            logger.info("Serializing full queryset")
-            serializer = self.get_serializer(queryset, many=True)
-            logger.info("Returning full response")
-            return Response(serializer.data)
-        except Exception as e:
-            logger.error(f"Error listing advertisements: {str(e)}")
-            logger.error(traceback.format_exc())
-            return Response({"detail": "An error occurred while fetching advertisements."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    def create(self, request, *args, **kwargs):
-        logger.info(f"Creating advertisement. User: {request.user}")
-        try:
-            return super().create(request, *args, **kwargs)
-        except Exception as e:
-            logger.error(f"Error creating advertisement: {str(e)}")
-            logger.error(traceback.format_exc())
-            return Response({"detail": "An error occurred while creating the advertisement."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
     def perform_create(self, serializer):
-        logger.info(f"Performing create for user: {self.request.user}")
+        if self.request.user.profile.user_type != 'professional':
+            raise serializers.ValidationError("Only professional users can create advertisements.")
         serializer.save(professional=self.request.user)
+
 
 class AdvertisementDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Advertisement.objects.all()
@@ -134,8 +103,6 @@ class JobOfferList(generics.ListCreateAPIView):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-
 
 class JobOfferDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = JobOffer.objects.all()
