@@ -113,7 +113,28 @@ class JobOfferList(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(client=self.request.user)
+        professional_id = self.request.data.get('professional')
+        advertisement_id = self.request.data.get('advertisement')
+        
+        try:
+            professional = User.objects.get(id=professional_id)
+            advertisement = Advertisement.objects.get(id=advertisement_id)
+        except (User.DoesNotExist, Advertisement.DoesNotExist):
+            raise serializers.ValidationError("Invalid professional or advertisement ID")
+
+        serializer.save(
+            client=self.request.user,
+            professional=professional,
+            advertisement=advertisement
+        )
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 class JobOfferDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = JobOffer.objects.all()

@@ -38,8 +38,9 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class JobOfferSerializer(serializers.ModelSerializer):
-    professional = serializers.ReadOnlyField(source='professional.username')
+    professional = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     client = serializers.ReadOnlyField(source='client.username')
+    advertisement = serializers.PrimaryKeyRelatedField(queryset=Advertisement.objects.all())
 
     class Meta:
         model = JobOffer
@@ -47,5 +48,10 @@ class JobOfferSerializer(serializers.ModelSerializer):
             'id',
             'professional',
             'client',
+            'advertisement',
             'title',
-            'description', 'budget', 'created_at', 'status']
+            'description',
+            'budget',
+            'created_at',
+            'status'
+        ]
