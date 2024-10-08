@@ -4,6 +4,7 @@ from .models import Advertisement, Review, JobOffer
 
 class AdvertisementSerializer(serializers.ModelSerializer):
     professional = serializers.SerializerMethodField()
+    image = serializers.ImageField(max_length=None, use_url=True, required=False)
 
     class Meta:
         model = Advertisement
@@ -24,8 +25,6 @@ class AdvertisementSerializer(serializers.ModelSerializer):
             'username': obj.professional.username
         }
 
-
-
 class ReviewSerializer(serializers.ModelSerializer):
     professional = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.filter(profile__user_type='professional'))
@@ -39,14 +38,15 @@ class ReviewSerializer(serializers.ModelSerializer):
             'reviewer',
             'content',
             'rating',
-            'created_at']
+            'created_at'
+        ]
 
     def create(self, validated_data):
         return Review.objects.create(**validated_data)
 
-
 class JobOfferSerializer(serializers.ModelSerializer):
-    professional = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    professional = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.filter(profile__user_type='professional'))
     client = serializers.ReadOnlyField(source='client.username')
     advertisement = serializers.PrimaryKeyRelatedField(queryset=Advertisement.objects.all())
 
@@ -63,3 +63,8 @@ class JobOfferSerializer(serializers.ModelSerializer):
             'created_at',
             'status'
         ]
+
+    def validate_professional(self, value):
+        if not value.profile.user_type == 'professional':
+            raise serializers.ValidationError("The selected user is not a professional.")
+        return value
