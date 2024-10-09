@@ -128,7 +128,7 @@ class JobOfferList(generics.ListCreateAPIView):
             
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            serializer.save(client=request.user, professional=professional, advertisement=advertisement)
+            serializer.save(client=request.user)
             
             headers = self.get_success_headers(serializer.data)
             logger.info(f"Job offer created successfully. Data: {serializer.data}")
@@ -171,7 +171,7 @@ class JobOfferCreate(generics.CreateAPIView):
             
             serializer = self.get_serializer(data=data)
             serializer.is_valid(raise_exception=True)
-            serializer.save(client=request.user, professional=professional, advertisement=advertisement)
+            serializer.save(client=request.user)
             
             headers = self.get_success_headers(serializer.data)
             logger.info(f"Job offer created successfully. Data: {serializer.data}")
@@ -184,5 +184,3 @@ class JobOfferCreate(generics.CreateAPIView):
             logger.error(f"Error creating job offer: {str(e)}")
             logger.error(traceback.format_exc())
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
