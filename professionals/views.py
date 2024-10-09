@@ -143,7 +143,6 @@ class JobOfferList(generics.ListCreateAPIView):
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class JobOfferDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = JobOffer.objects.all()
     serializer_class = JobOfferSerializer
