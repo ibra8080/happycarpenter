@@ -114,40 +114,35 @@ class JobOfferList(generics.ListCreateAPIView):
     serializer_class = JobOfferSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def perform_create(self, serializer):
-        professional_id = self.request.data.get('professional')
-        advertisement_id = self.request.data.get('advertisement')
-        
-        try:
-            professional = User.objects.get(id=professional_id)
-            advertisement = Advertisement.objects.get(id=advertisement_id)
-            if professional.profile.user_type != 'professional':
-                raise serializers.ValidationError("The selected user is not a professional.")
-        except User.DoesNotExist:
-            raise serializers.ValidationError("Invalid professional ID")
-        except Advertisement.DoesNotExist:
-            raise serializers.ValidationError("Invalid advertisement ID")
-
-        serializer.save(
-            client=self.request.user,
-            professional=professional,
-            advertisement=advertisement
-        )
-
     def create(self, request, *args, **kwargs):
         logger.info(f"Creating job offer. User: {request.user}")
         try:
+            professional_id = request.data.get('professional')
+            advertisement_id = request.data.get('advertisement')
+            
+            professional = User.objects.get(id=professional_id)
+            advertisement = Advertisement.objects.get(id=advertisement_id)
+            
+            if professional.profile.user_type != 'professional':
+                raise serializers.ValidationError("The selected user is not a professional.")
+            
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
-            self.perform_create(serializer)
+            serializer.save(client=request.user, professional=professional, advertisement=advertisement)
+            
             headers = self.get_success_headers(serializer.data)
             logger.info(f"Job offer created successfully. Data: {serializer.data}")
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        except User.DoesNotExist:
+            return Response({"detail": "Invalid professional ID"}, status=status.HTTP_400_BAD_REQUEST)
+        except Advertisement.DoesNotExist:
+            return Response({"detail": "Invalid advertisement ID"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             logger.error(f"Error creating job offer: {str(e)}")
             logger.error(traceback.format_exc())
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-            
+
+
 
 class JobOfferDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = JobOffer.objects.all()
