@@ -112,9 +112,15 @@ class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 class JobOfferList(generics.ListCreateAPIView):
-    queryset = JobOffer.objects.all()
     serializer_class = JobOfferSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.profile.user_type == 'professional':
+            return JobOffer.objects.filter(professional=user)
+        else:
+            return JobOffer.objects.filter(client=user)
 
     def create(self, request, *args, **kwargs):
         logger.info(f"Creating job offer. User: {request.user}")
