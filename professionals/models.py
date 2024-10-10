@@ -54,6 +54,14 @@ class JobOffer(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
             max_length=20, choices=STATUS_CHOICES, default='pending')
+    feedback = models.TextField(blank=True, null=True)
+    status_updated_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"Job offer for {self.professional.username} from {self.client.username}"
+
+    def update_status(self, new_status, feedback=None):
+        self.status = new_status
+        self.feedback = feedback
+        self.status_updated_at = timezone.now()
+        self.save()
