@@ -60,9 +60,11 @@ class JobOfferSerializer(serializers.ModelSerializer):
             'description',
             'budget',
             'created_at',
-            'status'
+            'status',
+            'feedback',
+            'status_updated_at'
         ]
-        read_only_fields = ['client', 'created_at', 'status']
+        read_only_fields = ['client', 'created_at', 'status', 'feedback', 'status_updated_at']
 
     def validate_professional(self, value):
         if not value.profile.user_type == 'professional':

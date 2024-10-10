@@ -1,5 +1,7 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from .models import Advertisement, Review, JobOffer
 from .serializers import AdvertisementSerializer, ReviewSerializer, JobOfferSerializer
 from profiles.models import Profile
@@ -184,3 +186,21 @@ class JobOfferCreate(generics.CreateAPIView):
             logger.error(f"Error creating job offer: {str(e)}")
             logger.error(traceback.format_exc())
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update_job_offer_status(request, offer_id):
+    try:
+        job_offer = JobOffer.objects.get(id=offer_id, professional=request.user)
+    except JobOffer.DoesNotExist:
+        return Response({"detail": "Job offer not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    new_status = request.data.get('status')
+    feedback = request.data.get('feedback', '')
+
+    if new_status not in dict(JobOffer.STATUS_CHOICES).keys():
+        return Response({"detail": "Invalid status."}, status=status.HTTP_400_BAD_REQUEST)
+
+    job_offer.update_status(new_status, feedback)
+    serializer = JobOfferSerializer(job_offer)
+    return Response(serializer.data)
