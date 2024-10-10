@@ -207,6 +207,10 @@ def update_job_offer_status(request, offer_id):
     if new_status not in dict(JobOffer.STATUS_CHOICES).keys():
         return Response({"detail": "Invalid status."}, status=status.HTTP_400_BAD_REQUEST)
 
-    job_offer.update_status(new_status, feedback)
+    job_offer.status = new_status
+    job_offer.feedback = feedback
+    job_offer.status_updated_at = timezone.now()
+    job_offer.save()
+
     serializer = JobOfferSerializer(job_offer)
     return Response(serializer.data)
