@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import JobOffer, Advertisement, Review
 
-# Register your models here.
+admin.site.register(JobOffer)
+admin.site.register(Advertisement)
+admin.site.register(Review)
