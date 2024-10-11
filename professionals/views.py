@@ -216,21 +216,31 @@ class JobOfferCreate(generics.CreateAPIView):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def update_job_offer_status(request, offer_id):
+    logger.info(f"Attempting to update job offer {offer_id} for user {request.user}")
     try:
         job_offer = JobOffer.objects.get(id=offer_id, professional=request.user)
     except JobOffer.DoesNotExist:
+        logger.error(f"Job offer {offer_id} not found for user {request.user}")
         return Response({"detail": "Job offer not found."}, status=status.HTTP_404_NOT_FOUND)
 
     new_status = request.data.get('status')
     feedback = request.data.get('feedback', '')
 
+    logger.info(f"Updating job offer {offer_id} to status: {new_status}")
+
     if new_status not in dict(JobOffer.STATUS_CHOICES).keys():
+        logger.error(f"Invalid status {new_status} for job offer {offer_id}")
         return Response({"detail": "Invalid status."}, status=status.HTTP_400_BAD_REQUEST)
 
-    job_offer.status = new_status
-    job_offer.feedback = feedback
-    job_offer.status_updated_at = timezone.now()
-    job_offer.save()
+    try:
+        job_offer.status = new_status
+        job_offer.feedback = feedback
+        job_offer.status_updated_at = timezone.now()
+        job_offer.save()
+        logger.info(f"Successfully updated job offer {offer_id} to status {new_status}")
+    except Exception as e:
+        logger.error(f"Error saving job offer {offer_id}: {str(e)}")
+        return Response({"detail": f"Error updating job offer: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     serializer = JobOfferSerializer(job_offer)
     return Response(serializer.data)
