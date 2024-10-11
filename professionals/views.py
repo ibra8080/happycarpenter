@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
 import logging
 import traceback
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -117,10 +118,30 @@ class JobOfferList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
+        logger.info(f"Getting job offers for user: {user.username}, user type: {user.profile.user_type}")
         if user.profile.user_type == 'professional':
-            return JobOffer.objects.filter(professional=user)
+            queryset = JobOffer.objects.filter(professional=user)
+            logger.info(f"Professional user, found {queryset.count()} job offers")
         else:
-            return JobOffer.objects.filter(client=user)
+            queryset = JobOffer.objects.filter(client=user)
+            logger.info(f"Client user, found {queryset.count()} job offers")
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        logger.info(f"Listing job offers for user: {request.user}")
+        try:
+            queryset = self.filter_queryset(self.get_queryset())
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            serializer = self.get_serializer(queryset, many=True)
+            logger.info(f"Returning {len(serializer.data)} job offers")
+            return Response(serializer.data)
+        except Exception as e:
+            logger.error(f"Error listing job offers: {str(e)}")
+            logger.error(traceback.format_exc())
+            return Response({"detail": "An error occurred while fetching job offers."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def create(self, request, *args, **kwargs):
         logger.info(f"Creating job offer. User: {request.user}")
@@ -149,7 +170,6 @@ class JobOfferList(generics.ListCreateAPIView):
             logger.error(f"Error creating job offer: {str(e)}")
             logger.error(traceback.format_exc())
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
 
 class JobOfferDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = JobOffer.objects.all()
