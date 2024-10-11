@@ -10,6 +10,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 import logging
 import traceback
 from django.utils import timezone
+from rest_framework.filters import OrderingFilter
 
 logger = logging.getLogger(__name__)
 
@@ -115,6 +116,9 @@ class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
 class JobOfferList(generics.ListCreateAPIView):
     serializer_class = JobOfferSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    ordering_fields = ['created_at']
+    ordering = ['-created_at']
 
     def get_queryset(self):
         user = self.request.user
