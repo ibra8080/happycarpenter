@@ -26,23 +26,17 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         }
 
 class ReviewSerializer(serializers.ModelSerializer):
-    professional = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.filter(profile__user_type='professional'))
     reviewer = serializers.ReadOnlyField(source='reviewer.username')
+    is_owner = serializers.SerializerMethodField()
 
     class Meta:
         model = Review
-        fields = [
-            'id',
-            'professional',
-            'reviewer',
-            'content',
-            'rating',
-            'created_at'
-        ]
+        fields = ['id', 'professional', 'reviewer', 'content', 'rating', 'created_at', 'updated_at', 'is_owner']
 
-    def create(self, validated_data):
-        return Review.objects.create(**validated_data)
+    def get_is_owner(self, obj):
+        request = self.context['request']
+        return request.user == obj.reviewer
+
 
 class JobOfferSerializer(serializers.ModelSerializer):
     professional = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(profile__user_type='professional'))
