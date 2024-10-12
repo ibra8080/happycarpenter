@@ -11,6 +11,7 @@ import logging
 import traceback
 from django.utils import timezone
 from rest_framework.filters import OrderingFilter
+from happy_carpenter_api.permissions import IsOwnerOrReadOnly
 
 logger = logging.getLogger(__name__)
 
@@ -81,37 +82,22 @@ class AdvertisementDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsProfessionalOrReadOnly]
 
 class ReviewList(generics.ListCreateAPIView):
-    queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['professional']
+
+    def get_queryset(self):
+        return Review.objects.filter(professional__profile__user_type='professional')
 
     def perform_create(self, serializer):
-        professional_id = self.request.data.get('professional')
-        try:
-            professional = User.objects.get(id=professional_id)
-            if professional.profile.user_type != 'professional':
-                raise serializers.ValidationError(
-                        {"professional": "The user is not a professional."})
-        except User.DoesNotExist:
-            raise serializers.ValidationError(
-                {"professional": "Professional not found."})
-
+        professional = User.objects.get(id=self.request.data.get('professional'))
+        if professional.profile.user_type != 'professional':
+            raise serializers.ValidationError("The user is not a professional.")
         serializer.save(reviewer=self.request.user, professional=professional)
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
 class JobOfferList(generics.ListCreateAPIView):
     serializer_class = JobOfferSerializer
