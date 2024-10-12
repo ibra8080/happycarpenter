@@ -1,19 +1,20 @@
 from rest_framework import serializers
 from .models import Profile
+from professionals.serializers import ReviewSerializer
 
 class ProfileSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     is_owner = serializers.SerializerMethodField()
-    image = serializers.ImageField(required=False, allow_null=True)
-    interests = serializers.ListField(
-        child=serializers.CharField(), required=False)
+    reviews = ReviewSerializer(many=True, read_only=True)
 
     class Meta:
         model = Profile
-        fields = ['id', 'owner', 'created_at', 'updated_at', 'name',
-                  'content', 'image', 'is_owner', 'user_type',
-                  'years_of_experience', 'specialties', 'portfolio_url',
-                  'interests', 'address']
+        fields = [
+            'id', 'owner', 'created_at', 'updated_at', 'name',
+            'content', 'image', 'is_owner', 'user_type',
+            'years_of_experience', 'specialties', 'portfolio_url',
+            'interests', 'address', 'public_view', 'reviews'
+        ]
 
     def get_is_owner(self, obj):
         request = self.context['request']
