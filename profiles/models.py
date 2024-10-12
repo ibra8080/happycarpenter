@@ -27,6 +27,7 @@ class Profile(models.Model):
     interests = ArrayField(
         models.CharField(max_length=100), blank=True, default=list)
     address = models.CharField(max_length=255, blank=True)
+    public_view = models.BooleanField(default=True)
 
     class Meta:
         ordering = ['-created_at']
