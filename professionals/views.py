@@ -12,7 +12,6 @@ import traceback
 from django.utils import timezone
 from rest_framework.filters import OrderingFilter
 from happy_carpenter_api.permissions import IsOwnerOrReadOnly
-
 logger = logging.getLogger(__name__)
 
 class IsProfessionalUser(permissions.BasePermission):
@@ -97,9 +96,19 @@ class ReviewList(generics.ListCreateAPIView):
         serializer.save(reviewer=self.request.user, professional=professional)
 
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Review.objects.all()
-    serializer_class = ReviewSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    serializer_class = ReviewSerializer
+    queryset = Review.objects.all()
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            self.perform_destroy(instance)
+            logger.info(f"Review {instance.id} deleted successfully by user {request.user}")
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            logger.error(f"Error deleting review: {str(e)}", exc_info=True)
+            return Response({"detail": "Failed to delete review."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class JobOfferList(generics.ListCreateAPIView):
     serializer_class = JobOfferSerializer
