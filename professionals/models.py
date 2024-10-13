@@ -23,7 +23,7 @@ class Advertisement(models.Model):
 class Review(models.Model):
     professional = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='reviews_received')
-    reviewer = models.ForeignKey(
+    owner = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='reviews_given')
     content = models.TextField()
     rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
@@ -31,11 +31,10 @@ class Review(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ['professional', 'reviewer']
+        unique_together = ['professional', 'owner']
 
     def __str__(self):
-        return f"Review for {self.professional.username} by {self.reviewer.username}"
-
+        return f"Review for {self.professional.username} by {self.owner.username}"
 
 
 class JobOffer(models.Model):

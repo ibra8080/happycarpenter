@@ -93,7 +93,7 @@ class ReviewList(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         professional_username = self.request.data.get('professional')
         professional = User.objects.get(username=professional_username)
-        serializer.save(reviewer=self.request.user, professional=professional)
+        serializer.save(owner=self.request.user, professional=professional)
 
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]

@@ -30,11 +30,11 @@ class ReviewSerializer(serializers.ModelSerializer):
         slug_field='username',
         queryset=User.objects.filter(profile__user_type='professional')
     )
-    reviewer = serializers.ReadOnlyField(source='reviewer.username')
+    owner = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
         model = Review
-        fields = ['id', 'professional', 'reviewer', 'content', 'rating', 'created_at', 'updated_at']
+        fields = ['id', 'professional', 'owner', 'content', 'rating', 'created_at', 'updated_at']
 
     def validate_professional(self, value):
         if not value.profile.user_type == 'professional':
