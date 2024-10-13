@@ -86,12 +86,14 @@ class ReviewList(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        return Review.objects.filter(professional__profile__user_type='professional')
+        professional_username = self.request.query_params.get('professional')
+        if professional_username:
+            return Review.objects.filter(professional__username=professional_username)
+        return Review.objects.all()
 
     def perform_create(self, serializer):
-        professional = User.objects.get(id=self.request.data.get('professional'))
-        if professional.profile.user_type != 'professional':
-            raise serializers.ValidationError("The user is not a professional.")
+        professional_username = self.request.data.get('professional')
+        professional = User.objects.get(username=professional_username)
         serializer.save(reviewer=self.request.user, professional=professional)
 
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
