@@ -103,12 +103,14 @@ class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     def destroy(self, request, *args, **kwargs):
         try:
             instance = self.get_object()
+            logger.info(f"Attempting to delete review {instance.id} by user {request.user}")
             self.perform_destroy(instance)
-            logger.info(f"Review {instance.id} deleted successfully by user {request.user}")
+            logger.info(f"Review {instance.id} deleted successfully")
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             logger.error(f"Error deleting review: {str(e)}", exc_info=True)
-            return Response({"detail": "Failed to delete review."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"detail": f"Failed to delete review: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class JobOfferList(generics.ListCreateAPIView):
     serializer_class = JobOfferSerializer
