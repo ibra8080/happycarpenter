@@ -26,16 +26,20 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         }
 
 class ReviewSerializer(serializers.ModelSerializer):
+    professional = serializers.SlugRelatedField(
+        slug_field='username',
+        queryset=User.objects.filter(profile__user_type='professional')
+    )
     reviewer = serializers.ReadOnlyField(source='reviewer.username')
-    is_owner = serializers.SerializerMethodField()
 
     class Meta:
         model = Review
-        fields = ['id', 'professional', 'reviewer', 'content', 'rating', 'created_at', 'updated_at', 'is_owner']
+        fields = ['id', 'professional', 'reviewer', 'content', 'rating', 'created_at', 'updated_at']
 
-    def get_is_owner(self, obj):
-        request = self.context['request']
-        return request.user == obj.reviewer
+    def validate_professional(self, value):
+        if not value.profile.user_type == 'professional':
+            raise serializers.ValidationError("The selected user is not a professional.")
+        return value
 
 
 class JobOfferSerializer(serializers.ModelSerializer):
