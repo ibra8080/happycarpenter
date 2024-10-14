@@ -28,7 +28,8 @@ class AdvertisementSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     professional = serializers.SlugRelatedField(
         slug_field='username',
-        queryset=User.objects.filter(profile__user_type='professional')
+        queryset=User.objects.filter(profile__user_type='professional'),
+        required=False
     )
     owner = serializers.ReadOnlyField(source='owner.username')
 
