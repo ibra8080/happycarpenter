@@ -34,11 +34,16 @@ class IsProfessionalOrReadOnly(permissions.BasePermission):
 
 class AdvertisementList(generics.ListCreateAPIView):
     serializer_class = AdvertisementSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        user = self.request.user
-        return Advertisement.objects.filter(professional=user)
+        if self.request.method == 'GET':
+            return Advertisement.objects.all().order_by('-created_at')  # Assuming there's a 'created_at' field
+        return Advertisement.objects.filter(professional=self.request.user)
+    
+    def perform_create(self, serializer):
+        serializer.save(professional=self.request.user)
+
 
     def list(self, request, *args, **kwargs):
         logger.info(f"Listing advertisements for user: {request.user}")
