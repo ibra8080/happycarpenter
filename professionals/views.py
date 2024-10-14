@@ -12,6 +12,7 @@ import traceback
 from django.utils import timezone
 from rest_framework.filters import OrderingFilter
 from happy_carpenter_api.permissions import IsOwnerOrReadOnly
+
 logger = logging.getLogger(__name__)
 
 class IsProfessionalUser(permissions.BasePermission):
@@ -79,14 +80,24 @@ class ReviewList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         professional_username = self.request.query_params.get('professional')
+        logger.info(f"Fetching reviews for professional: {professional_username}")
         if professional_username:
-            return Review.objects.filter(professional__username=professional_username)
+            queryset = Review.objects.filter(professional__username=professional_username)
+            logger.info(f"Found {queryset.count()} reviews for {professional_username}")
+            return queryset
+        logger.info("Fetching all reviews")
         return Review.objects.all()
 
     def perform_create(self, serializer):
         professional_username = self.request.data.get('professional')
-        professional = User.objects.get(username=professional_username)
-        serializer.save(owner=self.request.user, professional=professional)
+        logger.info(f"Creating review for professional: {professional_username}")
+        try:
+            professional = User.objects.get(username=professional_username)
+            serializer.save(owner=self.request.user, professional=professional)
+            logger.info(f"Review created successfully for {professional_username}")
+        except User.DoesNotExist:
+            logger.error(f"Professional user {professional_username} not found")
+            raise serializers.ValidationError("Professional user not found")
 
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
