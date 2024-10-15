@@ -129,13 +129,15 @@ class JobOfferList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        logger.info(f"Getting job offers for user: {user.username}, user type: {user.profile.user_type}")
-        if user.profile.user_type == 'professional':
+        role = self.request.query_params.get('role', 'auto')
+        logger.info(f"Getting job offers for user: {user.username}, user type: {user.profile.user_type}, role: {role}")
+        
+        if role == 'professional' or (role == 'auto' and user.profile.user_type == 'professional'):
             queryset = JobOffer.objects.filter(professional=user)
-            logger.info(f"Professional user, found {queryset.count()} job offers")
+            logger.info(f"Professional view, found {queryset.count()} job offers")
         else:
             queryset = JobOffer.objects.filter(client=user)
-            logger.info(f"Client user, found {queryset.count()} job offers")
+            logger.info(f"Client view, found {queryset.count()} job offers")
         return queryset
 
     def list(self, request, *args, **kwargs):
