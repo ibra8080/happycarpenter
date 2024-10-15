@@ -17,3 +17,13 @@ class FollowDetail(generics.RetrieveDestroyAPIView):
     permission_classes = [IsOwnerOrReadOnly]
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
+
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
+        filter_kwargs = {
+            'owner': self.request.user,
+            'followed__id': self.kwargs['pk']
+        }
+        obj = get_object_or_404(queryset, **filter_kwargs)
+        self.check_object_permissions(self.request, obj)
+        return obj
