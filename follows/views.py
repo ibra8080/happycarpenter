@@ -10,7 +10,9 @@ class FollowList(generics.ListCreateAPIView):
     serializer_class = FollowSerializer
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        followed_username = self.request.data.get('followed')
+        followed_user = User.objects.get(username=followed_username)
+        serializer.save(owner=self.request.user, followed=followed_user)
 
 
 class FollowDetail(generics.RetrieveDestroyAPIView):
