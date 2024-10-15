@@ -4,11 +4,14 @@ from django.contrib.auth.models import User
 
 class FollowSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
-    followed_name = serializers.ReadOnlyField(source='followed.username')
+    followed = serializers.SlugRelatedField(
+        slug_field='username',
+        queryset=User.objects.all()
+    )
 
     class Meta:
         model = Follow
-        fields = ['id', 'owner', 'followed', 'followed_name', 'created_at']
+        fields = ['id', 'owner', 'followed', 'created_at']
         read_only_fields = ['owner']
 
     def validate_followed(self, value):
