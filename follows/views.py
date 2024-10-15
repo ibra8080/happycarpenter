@@ -1,4 +1,5 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
+from rest_framework.response import Response
 from happy_carpenter_api.permissions import IsOwnerOrReadOnly
 from .models import Follow
 from .serializers import FollowSerializer
@@ -25,3 +26,9 @@ class FollowDetail(generics.RetrieveDestroyAPIView):
         obj = generics.get_object_or_404(queryset, **filter_kwargs)
         self.check_object_permissions(self.request, obj)
         return obj
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
