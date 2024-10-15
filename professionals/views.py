@@ -37,16 +37,15 @@ class AdvertisementList(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
+        queryset = Advertisement.objects.all().order_by('-created_at')
         if self.request.method == 'GET':
-            return Advertisement.objects.all().order_by('-created_at')  # Assuming there's a 'created_at' field
-        return Advertisement.objects.filter(professional=self.request.user)
-    
-    def perform_create(self, serializer):
-        serializer.save(professional=self.request.user)
-
+            professional_id = self.request.query_params.get('professional')
+            if professional_id:
+                queryset = queryset.filter(professional__id=professional_id)
+        return queryset
 
     def list(self, request, *args, **kwargs):
-        logger.info(f"Listing advertisements for user: {request.user}")
+        logger.info(f"Listing advertisements. User: {request.user}, Params: {request.query_params}")
         try:
             queryset = self.get_queryset()
             serializer = self.get_serializer(queryset, many=True)
