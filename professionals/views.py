@@ -197,6 +197,13 @@ class JobOfferCreate(generics.CreateAPIView):
         ad_id = self.kwargs.get('ad_id')
         
         logger.info(f"Creating job offer. User: {request.user}, Professional ID: {professional_id}, Ad ID: {ad_id}")
+        logger.info(f"Received professional_id: {professional_id}, type: {type(professional_id)}")
+        logger.info(f"Received ad_id: {ad_id}, type: {type(ad_id)}")
+        logger.info(f"Request data: {request.data}")
+
+        professional = User.objects.filter(id=professional_id).first()
+        advertisement = Advertisement.objects.filter(id=ad_id).first()
+        logger.info(f"Found professional: {professional}, advertisement: {advertisement}")
         
         try:
             professional = User.objects.get(id=professional_id)
@@ -217,8 +224,10 @@ class JobOfferCreate(generics.CreateAPIView):
             logger.info(f"Job offer created successfully. Data: {serializer.data}")
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         except User.DoesNotExist:
+            logger.error(f"User with id {professional_id} does not exist")
             return Response({"detail": "Invalid professional ID"}, status=status.HTTP_400_BAD_REQUEST)
         except Advertisement.DoesNotExist:
+            logger.error(f"Advertisement with id {ad_id} does not exist")
             return Response({"detail": "Invalid advertisement ID"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             logger.error(f"Error creating job offer: {str(e)}")
