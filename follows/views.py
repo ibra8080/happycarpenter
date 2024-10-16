@@ -20,7 +20,17 @@ class FollowList(generics.ListCreateAPIView):
         return queryset
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        try:
+            serializer.save(owner=self.request.user)
+        except IntegrityError:
+            follow = Follow.objects.get(
+                owner=self.request.user,
+                followed__username=serializer.validated_data['followed']
+            )
+            return Response(
+                self.get_serializer(follow).data,
+                status=status.HTTP_200_OK
+            )
 
 class FollowDetail(generics.RetrieveDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
