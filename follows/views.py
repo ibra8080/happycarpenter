@@ -31,12 +31,12 @@ class FollowDetail(generics.RetrieveDestroyAPIView):
     def get_object(self):
         followed_username = self.kwargs['pk']
         followed_user = get_object_or_404(User, username=followed_username)
-        return get_object_or_404(Follow, owner=self.request.user, followed=followed_user)
+        return Follow.objects.filter(owner=self.request.user, followed=followed_user).first()
 
     def destroy(self, request, *args, **kwargs):
-        try:
-            instance = self.get_object()
+        instance = self.get_object()
+        if instance:
             self.perform_destroy(instance)
             return Response(status=status.HTTP_204_NO_CONTENT)
-        except Follow.DoesNotExist:
-            return Response({"detail": "Follow relationship not found."}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response({"detail": "Already unfollowed."}, status=status.HTTP_200_OK)
