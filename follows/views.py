@@ -2,6 +2,8 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from .models import Follow
 from .serializers import FollowSerializer
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
 
 class FollowList(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -20,29 +22,21 @@ class FollowList(generics.ListCreateAPIView):
         return queryset
 
     def perform_create(self, serializer):
-        try:
-            serializer.save(owner=self.request.user)
-        except IntegrityError:
-            follow = Follow.objects.get(
-                owner=self.request.user,
-                followed__username=serializer.validated_data['followed']
-            )
-            return Response(
-                self.get_serializer(follow).data,
-                status=status.HTTP_200_OK
-            )
+        serializer.save(owner=self.request.user)
 
 class FollowDetail(generics.RetrieveDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = FollowSerializer
-    queryset = Follow.objects.all()
 
     def get_object(self):
-        queryset = self.filter_queryset(self.get_queryset())
-        filter_kwargs = {
-            'owner': self.request.user,
-            'followed__username': self.kwargs['pk']
-        }
-        obj = generics.get_object_or_404(queryset, **filter_kwargs)
-        self.check_object_permissions(self.request, obj)
-        return obj
+        followed_username = self.kwargs['pk']
+        followed_user = get_object_or_404(User, username=followed_username)
+        return get_object_or_404(Follow, owner=self.request.user, followed=followed_user)
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            self.perform_destroy(instance)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Follow.DoesNotExist:
+            return Response({"detail": "Follow relationship not found."}, status=status.HTTP_404_NOT_FOUND)
