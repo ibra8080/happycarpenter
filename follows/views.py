@@ -24,19 +24,20 @@ class FollowList(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-class FollowDetail(generics.RetrieveDestroyAPIView):
+class FollowDetail(generics.DestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = FollowSerializer
 
     def get_object(self):
         followed_username = self.kwargs['pk']
         followed_user = get_object_or_404(User, username=followed_username)
-        return Follow.objects.filter(owner=self.request.user, followed=followed_user).first()
+        return get_object_or_404(Follow, owner=self.request.user, followed=followed_user)
 
     def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        if instance:
+        try:
+            instance = self.get_object()
             self.perform_destroy(instance)
             return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response({"detail": "Already unfollowed."}, status=status.HTTP_200_OK)
+        except Follow.DoesNotExist:
+            return Response({"detail": "You are not following this user."}, status=status.HTTP_400_BAD_REQUEST)
+
