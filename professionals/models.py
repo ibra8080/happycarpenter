@@ -6,6 +6,7 @@ from cloudinary.models import CloudinaryField
 class Advertisement(models.Model):
     professional = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='advertisements')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_advertisements')
     title = models.CharField(max_length=200)
     description = models.TextField()
     image = CloudinaryField('image', blank=True, null=True)
@@ -15,6 +16,11 @@ class Advertisement(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.owner_id:
+            self.owner = self.professional
+        super().save(*args, **kwargs)
 
     class Meta:
         ordering = ['-created_at']

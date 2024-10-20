@@ -66,7 +66,7 @@ class AdvertisementList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         logger.info(f"Performing create for user: {self.request.user}")
-        serializer.save(professional=self.request.user)
+        serializer.save(professional=self.request.user, owner=self.request.user)
 
 class AdvertisementDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Advertisement.objects.all()

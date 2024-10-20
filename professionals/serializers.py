@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 
 class AdvertisementSerializer(serializers.ModelSerializer):
     professional = serializers.SerializerMethodField()
+    owner = serializers.ReadOnlyField(source='owner.username')
     image = serializers.ImageField(max_length=None, use_url=True, required=False)
 
     class Meta:
@@ -15,6 +16,7 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         fields = [
             'id', 
             'professional', 
+            'owner',
             'title', 
             'description', 
             'image', 
@@ -28,6 +30,10 @@ class AdvertisementSerializer(serializers.ModelSerializer):
             'id': obj.professional.id,
             'username': obj.professional.username
         }
+
+    def create(self, validated_data):
+        validated_data['owner'] = self.context['request'].user
+        return super().create(validated_data)
 
     def validate(self, data):
         logger.info(f"Validating data: {data}")
