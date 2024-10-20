@@ -1,6 +1,10 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import Advertisement, Review, JobOffer
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class AdvertisementSerializer(serializers.ModelSerializer):
     professional = serializers.SerializerMethodField()
@@ -26,6 +30,7 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         }
 
     def validate(self, data):
+        logger.info(f"Validating data: {data}")
         if self.instance:  # This is an update
             title = data.get('title', self.instance.title)
             description = data.get('description', self.instance.description)
@@ -34,18 +39,23 @@ class AdvertisementSerializer(serializers.ModelSerializer):
             description = data.get('description')
 
         if not title:
+            logger.error("Title is required")
             raise serializers.ValidationError("Title is required")
         if not description:
+            logger.error("Description is required")
             raise serializers.ValidationError("Description is required")
         return data
 
     def update(self, instance, validated_data):
+        logger.info(f"Updating instance: {instance}")
+        logger.info(f"Validated data: {validated_data}")
         instance.title = validated_data.get('title', instance.title)
         instance.description = validated_data.get('description', instance.description)
         instance.place = validated_data.get('place', instance.place)
         if 'image' in validated_data:
             instance.image = validated_data['image']
         instance.save()
+        logger.info(f"Instance updated: {instance}")
         return instance
 
 

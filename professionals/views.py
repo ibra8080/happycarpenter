@@ -80,12 +80,18 @@ class AdvertisementDetail(generics.RetrieveUpdateDestroyAPIView):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
+        logger.info(f"Updating advertisement {instance.id} for user {request.user}")
+        logger.info(f"Request data: {request.data}")
+        
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         try:
             serializer.is_valid(raise_exception=True)
+            logger.info(f"Serializer validated data: {serializer.validated_data}")
             self.perform_update(serializer)
+            logger.info(f"Advertisement {instance.id} updated successfully")
             return Response(serializer.data)
         except serializers.ValidationError as e:
+            logger.error(f"Validation error: {str(e)}")
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             logger.error(f"Error updating advertisement: {str(e)}", exc_info=True)
