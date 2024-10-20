@@ -77,6 +77,23 @@ class AdvertisementDetail(generics.RetrieveUpdateDestroyAPIView):
         user = self.request.user
         return Advertisement.objects.filter(professional=user)
 
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        try:
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            return Response(serializer.data)
+        except serializers.ValidationError as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.error(f"Error updating advertisement: {str(e)}", exc_info=True)
+            return Response({"detail": f"An error occurred while updating the advertisement: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
 
 class ReviewList(generics.ListCreateAPIView):
     serializer_class = ReviewSerializer
