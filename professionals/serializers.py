@@ -25,6 +25,30 @@ class AdvertisementSerializer(serializers.ModelSerializer):
             'username': obj.professional.username
         }
 
+    def validate(self, data):
+        if self.instance:  # This is an update
+            title = data.get('title', self.instance.title)
+            description = data.get('description', self.instance.description)
+        else:  # This is a create
+            title = data.get('title')
+            description = data.get('description')
+
+        if not title:
+            raise serializers.ValidationError("Title is required")
+        if not description:
+            raise serializers.ValidationError("Description is required")
+        return data
+
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.description = validated_data.get('description', instance.description)
+        instance.place = validated_data.get('place', instance.place)
+        if 'image' in validated_data:
+            instance.image = validated_data['image']
+        instance.save()
+        return instance
+
+
 class ReviewSerializer(serializers.ModelSerializer):
     professional = serializers.SlugRelatedField(
         slug_field='username',
