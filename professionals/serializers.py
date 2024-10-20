@@ -44,6 +44,7 @@ class AdvertisementSerializer(serializers.ModelSerializer):
             title = data.get('title')
             description = data.get('description')
 
+
         if not title:
             logger.error("Title is required")
             raise serializers.ValidationError("Title is required")
@@ -51,6 +52,15 @@ class AdvertisementSerializer(serializers.ModelSerializer):
             logger.error("Description is required")
             raise serializers.ValidationError("Description is required")
         return data
+    
+    def validate_image(self, value):
+        if value:
+            if value.size > 2 * 1024 * 1024:  # 2MB limit
+                raise serializers.ValidationError("Image file too large (max 2MB)")
+            if not value.name.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
+                raise serializers.ValidationError("Unsupported image format. Use PNG, JPG, JPEG or GIF.")
+        return value
+
 
     def update(self, instance, validated_data):
         logger.info(f"Updating instance: {instance}")
