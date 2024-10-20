@@ -77,6 +77,17 @@ class AdvertisementDetail(generics.RetrieveUpdateDestroyAPIView):
         user = self.request.user
         return Advertisement.objects.filter(professional=user)
 
+    def destroy(self, request, *args, **kwargs):
+        try:
+            instance = self.get_object()
+            logger.info(f"Attempting to delete advertisement {instance.id} by user {request.user}")
+            self.perform_destroy(instance)
+            logger.info(f"Advertisement {instance.id} deleted successfully")
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            logger.error(f"Error deleting advertisement: {str(e)}", exc_info=True)
+            return Response({"detail": f"Failed to delete advertisement: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
