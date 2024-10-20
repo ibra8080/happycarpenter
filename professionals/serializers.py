@@ -94,18 +94,22 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class JobOfferSerializer(serializers.ModelSerializer):
     professional = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(profile__user_type='professional'))
-    
+    advertisement_details = serializers.SerializerMethodField()
+
     class Meta:
         model = JobOffer
         fields = [
             'id', 'professional', 'client', 'advertisement', 'title',
             'description', 'budget', 'created_at', 'status', 'feedback',
-            'status_updated_at'
+            'status_updated_at', 'advertisement_details'
         ]
         read_only_fields = ['client', 'created_at', 'status', 'feedback', 'status_updated_at']
 
-    def validate_professional(self, value):
-        if not value.profile.user_type == 'professional':
-            raise serializers.ValidationError("The selected user is not a professional.")
-        return value
-
+    def get_advertisement_details(self, obj):
+        if obj.advertisement:
+            return {
+                'title': obj.advertisement.title,
+                'image': obj.advertisement.image.url if obj.advertisement.image else None,
+                'place': obj.advertisement.place
+            }
+        return None
