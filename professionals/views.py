@@ -236,46 +236,40 @@ class JobOfferCreate(generics.CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        professional_id = self.kwargs.get('professional_id')
-        ad_id = self.kwargs.get('ad_id')
-        
-        logger.info(f"Creating job offer. User: {request.user}, Professional ID: {professional_id}, Ad ID: {ad_id}")
-        logger.info(f"Received professional_id: {professional_id}, type: {type(professional_id)}")
-        logger.info(f"Received ad_id: {ad_id}, type: {type(ad_id)}")
-        logger.info(f"Request data: {request.data}")
+        logger.info(f"Creating job offer. User: {request.user}, Data: {request.data}")
 
-        professional = User.objects.filter(id=professional_id).first()
-        advertisement = Advertisement.objects.filter(id=ad_id).first()
-        logger.info(f"Found professional: {professional}, advertisement: {advertisement}")
+        professional_id = request.data.get('professional')
+        ad_id = request.data.get('advertisement')
         
+        if not professional_id or not ad_id:
+            return Response({"detail": "Both professional and advertisement IDs are required."}, 
+                            status=status.HTTP_400_BAD_REQUEST)
+
         try:
             professional = User.objects.get(id=professional_id)
             advertisement = Advertisement.objects.get(id=ad_id)
-            
-            if professional.profile.user_type != 'professional':
-                raise serializers.ValidationError("The selected user is not a professional.")
-            
-            data = request.data.copy()
-            data['professional'] = professional_id
-            data['advertisement'] = ad_id
-            
-            serializer = self.get_serializer(data=data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save(client=request.user)
-            
-            headers = self.get_success_headers(serializer.data)
-            logger.info(f"Job offer created successfully. Data: {serializer.data}")
-            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         except User.DoesNotExist:
-            logger.error(f"User with id {professional_id} does not exist")
             return Response({"detail": "Invalid professional ID"}, status=status.HTTP_400_BAD_REQUEST)
         except Advertisement.DoesNotExist:
-            logger.error(f"Advertisement with id {ad_id} does not exist")
             return Response({"detail": "Invalid advertisement ID"}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as e:
-            logger.error(f"Error creating job offer: {str(e)}")
-            logger.error(traceback.format_exc())
-            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        if professional.profile.user_type != 'professional':
+            return Response({"detail": "The selected user is not a professional."}, 
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        job_offer = serializer.save(
+            client=request.user,
+            professional=professional,
+            advertisement=advertisement
+        )
+
+        headers = self.get_success_headers(serializer.data)
+        logger.info(f"Job offer created successfully. ID: {job_offer.id}")
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
