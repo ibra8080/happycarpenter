@@ -92,8 +92,14 @@ class ReviewSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("The selected user is not a professional.")
         return value
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username']
+
 class JobOfferSerializer(serializers.ModelSerializer):
-    professional = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(profile__user_type='professional'))
+    professional = UserSerializer(read_only=True)
+    client = UserSerializer(read_only=True)
     advertisement_details = serializers.SerializerMethodField()
 
     class Meta:
@@ -103,13 +109,16 @@ class JobOfferSerializer(serializers.ModelSerializer):
             'description', 'budget', 'created_at', 'status', 'feedback',
             'status_updated_at', 'advertisement_details'
         ]
-        read_only_fields = ['client', 'created_at', 'status', 'feedback', 'status_updated_at']
+        read_only_fields = ['created_at', 'status', 'feedback', 'status_updated_at']
 
     def get_advertisement_details(self, obj):
         if obj.advertisement:
             return {
+                'id': obj.advertisement.id,
                 'title': obj.advertisement.title,
                 'image': obj.advertisement.image.url if obj.advertisement.image else None,
-                'place': obj.advertisement.place
+                'place': obj.advertisement.place,
+                'owner': UserSerializer(obj.advertisement.owner).data
             }
         return None
+        
