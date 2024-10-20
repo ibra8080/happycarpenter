@@ -31,9 +31,6 @@ class AdvertisementSerializer(serializers.ModelSerializer):
             'username': obj.professional.username
         }
 
-    def create(self, validated_data):
-        validated_data['owner'] = self.context['request'].user
-        return super().create(validated_data)
 
     def validate(self, data):
         logger.info(f"Validating data: {data}")
@@ -44,13 +41,12 @@ class AdvertisementSerializer(serializers.ModelSerializer):
             title = data.get('title')
             description = data.get('description')
 
-
         if not title:
             logger.error("Title is required")
-            raise serializers.ValidationError("Title is required")
+            raise serializers.ValidationError({"title": "Title is required"})
         if not description:
             logger.error("Description is required")
-            raise serializers.ValidationError("Description is required")
+            raise serializers.ValidationError({"description": "Description is required"})
         return data
     
     def validate_image(self, value):
@@ -60,6 +56,10 @@ class AdvertisementSerializer(serializers.ModelSerializer):
             if not value.name.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
                 raise serializers.ValidationError("Unsupported image format. Use PNG, JPG, JPEG or GIF.")
         return value
+
+    def create(self, validated_data):
+        validated_data['owner'] = self.context['request'].user
+        return super().create(validated_data)
 
 
     def update(self, instance, validated_data):

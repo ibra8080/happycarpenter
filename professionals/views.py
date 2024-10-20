@@ -59,10 +59,18 @@ class AdvertisementList(generics.ListCreateAPIView):
         if request.user.profile.user_type != 'professional':
             return Response({"detail": "Only professional users can create advertisements."}, status=status.HTTP_403_FORBIDDEN)
         try:
-            return super().create(request, *args, **kwargs)
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            logger.info(f"Advertisement created successfully. Data: {serializer.data}")
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        except serializers.ValidationError as e:
+            logger.error(f"Validation error: {str(e)}")
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            logger.error(f"Error creating advertisement: {str(e)}")
-            return Response({"detail": "An error occurred while creating the advertisement."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            logger.error(f"Error creating advertisement: {str(e)}", exc_info=True)
+            return Response({"detail": f"An error occurred while creating the advertisement: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def perform_create(self, serializer):
         logger.info(f"Performing create for user: {self.request.user}")
