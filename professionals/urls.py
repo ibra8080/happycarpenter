@@ -8,6 +8,6 @@ urlpatterns = [
     path('reviews/<int:pk>/', views.ReviewDetail.as_view()),
     path('job-offers/', views.JobOfferList.as_view()),
     path('job-offers/<int:pk>/', views.JobOfferDetail.as_view()),
-    path('job-offers/<int:professional_id>/<int:ad_id>/', views.JobOfferCreate.as_view(), name='job-offer-create'),
+    path('job-offers/', views.JobOfferCreate.as_view(), name='job-offer-create'),
     path('job-offers/<int:offer_id>/update-status/', views.update_job_offer_status, name='update-job-offer-status'),
 ]
