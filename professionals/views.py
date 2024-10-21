@@ -270,7 +270,6 @@ class JobOfferCreate(generics.CreateAPIView):
         logger.info(f"Job offer created successfully. ID: {job_offer.id}")
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def update_job_offer_status(request, offer_id):
