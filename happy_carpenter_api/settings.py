@@ -145,6 +145,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://happy-carpenter-front-26472ba73a7c.herokuapp.com",
     "https://8000-ibra8080-happycarpenter-oxrz2os0tx6.ws.codeinstitute-ide.net",
+    "https://happycarpenterfront-128bd5230c8d.herokuapp.com"
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
@@ -232,4 +233,5 @@ CSRF_TRUSTED_ORIGINS = [
     'https://happy-carpenter-front-26472ba73a7c.herokuapp.com',
     'https://8080-ibra8080-happycarpenter-oxrz2os0tx6.ws.codeinstitute-ide.net',
     "https://8000-ibra8080-happycarpenter-oxrz2os0tx6.ws.codeinstitute-ide.net",
+    "https://happycarpenterfront-128bd5230c8d.herokuapp.com"
 ]
